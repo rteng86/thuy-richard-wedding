@@ -137,8 +137,6 @@ function initContentBindings() {
     const key = el.dataset.fieldSrc;
     if (key === "whatsapp-qr") el.src = c.contact.whatsappQrImage;
   });
-
-  document.title = document.title.replace(/\{\{coupleNames\}\}/g, textMap["couple-names"]);
 }
 
 /* =============================================================================
