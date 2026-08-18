@@ -34,7 +34,7 @@
 // CONFIG — edit these to match content.js on the site
 // =============================================================================
 var COUPLE_NAMES = "Thuy Le & Richard Teng";
-var WEDDING_DATE_RANGE = "June 30 – July 3, 2027"; // TODO: confirm year
+var WEDDING_DATE_RANGE = "June 30 – July 3, 2027";
 var VENUE_LOCATION = "Ho Tram, Vietnam";
 var CONTACT_NAME = "Richard";
 var CONTACT_PHONE = "626.319.1332";

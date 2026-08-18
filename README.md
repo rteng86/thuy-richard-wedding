@@ -46,12 +46,12 @@ fill in every value marked `TODO`:
 | Field | Where |
 |---|---|
 | Couple names | `WEDDING_CONTENT.coupleNames` |
-| Wedding dates (incl. **year** — see assumption below) | `WEDDING_CONTENT.dates` |
+| Wedding dates — confirmed: June 30 – July 3, 2027 | `WEDDING_CONTENT.dates` |
+| RSVP deadline — confirmed: December 31, 2026 | `WEDDING_CONTENT.rsvpDeadline` |
 | Venue / hotel name, booking link, room block code, contact | `WEDDING_CONTENT.venue` |
 | General contact email (footer, error fallback) | `WEDDING_CONTENT.contactEmail` |
 | Itinerary times (ceremony, reception, shuttle windows, checkout) | `WEDDING_CONTENT.itinerary[].events[].time` |
 | "Where to stay" FAQ answer | `WEDDING_CONTENT.faqs` (id: `faq-where-to-stay`) — pulls from `venue` automatically |
-| RSVP deadline date | `index.html`, search for `TODO: RSVP deadline date` |
 
 Everything else (names, dates, hotel info) is pulled into all four pages
 automatically at runtime via a small binding system in `main.js`
@@ -61,9 +61,7 @@ ever edit it in one place.
 ### Full TODO checklist
 
 - [x] Couple names (`content.js` → `coupleNames`) — set to "Thuy Le" / "Richard Teng"
-- [ ] Confirm the wedding **year** — the brief didn't specify one, so this
-      build assumes **2027** as a placeholder (`content.js` → `dates`, all
-      three ISO dates)
+- [x] Wedding dates — confirmed **June 30 – July 3, 2027** (`content.js` → `dates`)
 - [ ] Venue name (`content.js` → `venue.name`)
 - [x] Hotel/resort name (`content.js` → `venue.hotelName`) — set to "The Grand Ho Tram", inferred
       from the shuttle schedule document you shared. Double-check this is right.
@@ -76,7 +74,7 @@ ever edit it in one place.
       the text/WhatsApp line below
 - [x] Contact method for "Questions?" callouts (`content.js` → `contact`) — set to text Richard
       at 626.319.1332; **WhatsApp group link still TBD**, update `contact.whatsappNote` once it exists
-- [ ] RSVP deadline date (`index.html`, RSVP section intro paragraph)
+- [x] RSVP deadline date — confirmed **December 31, 2026** (`content.js` → `rsvpDeadline`)
 - [x] Day 1 shuttle-to-Ho-Tram time and Day 4 shuttle-to-HCMC time — now auto-computed from
       `SHUTTLE_SCHEDULE` in `content.js` based on the actual weekday of your arrival/departure
       dates, so these update automatically if you change the wedding year

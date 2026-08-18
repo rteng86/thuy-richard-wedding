@@ -111,6 +111,7 @@ function initContentBindings() {
     "date-wedding": formatDate(c.dates.wedding),
     "date-excursion": formatDate(c.dates.excursion),
     "date-departure": formatDate(c.dates.departure),
+    "rsvp-deadline": formatDate(c.rsvpDeadline),
   };
 
   const htmlFields = new Set(["contact-line", "contact-line-lowercase"]);

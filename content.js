@@ -80,18 +80,17 @@ var WEDDING_CONTENT = {
     partner2: "Richard Teng",
   },
 
-  // -------------------------------------------------------------------
-  // Dates. NOTE: no year was specified in the brief. We've assumed 2027
-  // as a placeholder (the next year June 30 falls on a weekend-adjacent
-  // date after today). TODO: confirm the actual year and update the
-  // three ISO dates below (format YYYY-MM-DD, local Ho Tram time).
-  // -------------------------------------------------------------------
+  // Dates (format YYYY-MM-DD, local Ho Tram time). Confirmed: June 30 – July 3, 2027.
   dates: {
     arrival: "2027-06-30",
     wedding: "2027-07-01",
     excursion: "2027-07-02",
     departure: "2027-07-03",
   },
+
+  // Shown on the RSVP form ("Please respond by ..."). ISO format below is
+  // parsed for the data binding; edit here only.
+  rsvpDeadline: "2026-12-31",
 
   location: {
     city: "Ho Tram",
