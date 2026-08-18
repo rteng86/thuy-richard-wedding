@@ -10,9 +10,9 @@
  * ---------------------------------------------------------------------------
  */
 
-// The Grand Ho Tram's regular shuttle between Ho Chi Minh City and the
-// resort — separate from the Vung Tau day-trip shuttle on Day 3, which is
-// still TODO. Times are grouped by day-of-week since they vary. Declared
+// The resort's regular shuttle between Ho Chi Minh City and Ho Tram —
+// separate from the Vung Tau day-trip shuttle on Day 3, which is still
+// TODO. Times are grouped by day-of-week since they vary. Declared
 // here (rather than inline in WEDDING_CONTENT) so it can be referenced
 // both as itinerary data and when building the FAQ table's HTML below.
 var SHUTTLE_SCHEDULE = {
@@ -108,7 +108,7 @@ var WEDDING_CONTENT = {
   // -------------------------------------------------------------------
   venue: {
     name: "TODO: Venue Name",
-    hotelName: "The Grand Ho Tram",
+    hotelName: "TBD",
     bookingLink: "https://example.com/TODO-booking-link",
     roomBlockCode: "TODO-ROOM-BLOCK-CODE",
     contactEmail: "TODO@example.com",

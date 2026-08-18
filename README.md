@@ -63,8 +63,7 @@ ever edit it in one place.
 - [x] Couple names (`content.js` → `coupleNames`) — set to "Thuy Le" / "Richard Teng"
 - [x] Wedding dates — confirmed **June 30 – July 3, 2027** (`content.js` → `dates`)
 - [ ] Venue name (`content.js` → `venue.name`)
-- [x] Hotel/resort name (`content.js` → `venue.hotelName`) — set to "The Grand Ho Tram", inferred
-      from the shuttle schedule document you shared. Double-check this is right.
+- [ ] Hotel/resort name (`content.js` → `venue.hotelName`) — currently "TBD"
 - [ ] Hotel booking link (`content.js` → `venue.bookingLink`)
 - [ ] Room block code (`content.js` → `venue.roomBlockCode`)
 - [ ] Hotel contact email + phone (`content.js` → `venue.contactEmail` / `contactPhone`)
