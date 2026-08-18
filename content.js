@@ -258,6 +258,7 @@ var WEDDING_CONTENT = {
     { id: "phones", label: "Phones & Data" },
     { id: "getting-around", label: "Getting Around" },
     { id: "where-to-stay", label: "Where to Stay" },
+    { id: "what-to-eat", label: "What to Eat" },
   ],
 
   faqs: [
@@ -322,7 +323,17 @@ var WEDDING_CONTENT = {
         "<li><strong>District 1</strong> — the touristy heart of the city. Walkable, packed with sights, restaurants, and nightlife. Book here if you want to be in the middle of everything.</li>" +
         "<li><strong>District 4</strong> — right next door to District 1, but calmer and less traffic-heavy. A good pick if you still want to be close without the D1 chaos.</li>" +
         "<li><strong>Bình Thạnh District</strong> — another great option. A bit more local, still easy to get around from.</li>" +
-        "</ul><p>For food, the <a href=\"https://guide.michelin.com/us/en/restaurants?q=Ho+Chi+Minh+City+vietnam&amp;seeAll=true\" target=\"_blank\" rel=\"noopener\">Michelin Guide's Ho Chi Minh City list</a> has recommendations across every budget — cheap eats and Michelin-starred tasting menus alike.</p>",
+        "</ul><p>For food recommendations near wherever you land, see <a href=\"#what-to-eat\">What to Eat</a> below.</p>",
+    },
+    {
+      id: "faq-what-to-eat",
+      category: "what-to-eat",
+      question: "What should we eat while we're there?",
+      answer:
+        "<p>Short answer: almost anything. Vietnamese food is one of the best reasons to be early to this wedding.</p>" +
+        "<h4>In Saigon</h4><p>Start with the basics — <strong>bánh mì</strong>, <strong>phở</strong>, and <strong>bún thịt nướng</strong> — from a stall, not just a sit-down restaurant. Some of the best meals in the city cost less than a coffee back home. A busy stall with a line is a good sign, not a red flag.</p>" +
+        "<p>Want something closer to a sure thing? The <a href=\"https://guide.michelin.com/us/en/restaurants?q=Ho+Chi+Minh+City+vietnam&amp;seeAll=true\" target=\"_blank\" rel=\"noopener\">Michelin Guide's Ho Chi Minh City list</a> has both Michelin-rated and Michelin-recommended spots across every budget — cheap eats included, not just tasting menus.</p>" +
+        "<h4 style=\"margin-top: 1.5rem;\">In Ho Tram</h4><p>Being on the coast means fresh seafood is easy to find near the resort. TODO: add a few specific restaurant picks once we've scoped out favorites.</p>",
     },
   ],
 
