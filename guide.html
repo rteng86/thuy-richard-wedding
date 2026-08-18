@@ -1,0 +1,155 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Local Insider Guide &amp; What to Bring — {{coupleNames}}</title>
+<meta name="description" content="Currency, tipping, safety, time zone, weather, and a packing checklist for Ho Tram.">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Fraunces:opsz,wght@9..144,400;9..144,500;9..144,600;9..144,700&family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="styles.css">
+</head>
+<body>
+<a class="skip-link" href="#main">Skip to content</a>
+<span id="top"></span>
+
+<header class="site-header">
+  <div class="container">
+    <a href="index.html" class="site-logo" data-field="couple-names">Partner One &amp; Partner Two</a>
+    <button class="nav-toggle" type="button" aria-expanded="false" aria-controls="main-nav" aria-label="Toggle navigation menu">
+      <span></span>
+    </button>
+    <nav class="main-nav" id="main-nav" aria-label="Primary">
+      <ul>
+        <li><a href="index.html">Home</a></li>
+        <li><a href="travel.html">Travel</a></li>
+        <li><a href="schedule.html">Schedule</a></li>
+        <li><a href="guide.html">Guide</a></li>
+      </ul>
+    </nav>
+  </div>
+</header>
+
+<main id="main">
+
+  <section class="page-hero">
+    <div class="container">
+      <span class="eyebrow">Local guide</span>
+      <h1>How to do Vietnam like you've done it before</h1>
+      <p class="container-narrow">Money, safety, time zones, weather, and what to pack. Skim it once before you leave.</p>
+      <div class="hero-actions" style="margin-top: var(--space-5);">
+        <a href="#insider-guide" class="btn btn--secondary btn--small">Insider guide</a>
+        <a href="#what-to-bring" class="btn btn--secondary btn--small">What to bring</a>
+      </div>
+    </div>
+  </section>
+
+  <!-- ===================================================================
+       INSIDER GUIDE
+       =================================================================== -->
+  <section class="section" id="insider-guide">
+    <div class="container">
+      <div class="section-heading fade-in">
+        <h2>Insider guide</h2>
+      </div>
+
+      <div class="card-grid fade-in">
+        <div class="info-card">
+          <h3>Currency &amp; payments</h3>
+          <p>Use VND wherever you can. Larger venues generally take credit cards, but small vendors are cash-first.</p>
+          <p><strong>VPBank ATMs</strong> are the most reliable option for fee-free withdrawals.</p>
+          <p>When a card machine asks "charge in USD or VND?" — <strong>always choose VND.</strong> That USD option (Dynamic Currency Conversion) is a bad exchange rate with a fee attached, dressed up as a convenience.</p>
+        </div>
+        <div class="info-card">
+          <h3>Tipping</h3>
+          <p>Not expected, anywhere. Truly — no mental math required, no guilt if you don't.</p>
+        </div>
+        <div class="info-card">
+          <h3>Airport &amp; ride safety</h3>
+          <p>Don't accept rides from people who approach you in arrivals. Use Grab, or the official taxi queue.</p>
+          <p>See the <a href="travel.html#faq-grab">Travel page</a> for the full rundown on getting around.</p>
+        </div>
+        <div class="info-card">
+          <h3>Weather</h3>
+          <p>Late June/early July is hot, humid, and can rain without much warning. Expect it, don't fight it.</p>
+        </div>
+      </div>
+
+      <div class="divider" role="presentation"></div>
+
+      <div class="fade-in">
+        <span class="eyebrow">Time zone</span>
+        <h3>Saigon vs. your local time</h3>
+        <p style="max-width: 60ch;">
+          Vietnam runs on <strong>UTC+7</strong> — that's 11 hours ahead of US Eastern and 14 hours ahead of
+          US Pacific in July (US daylight saving is in effect then, Vietnam doesn't observe DST). Here's a
+          live comparison:
+        </p>
+        <div class="time-widget" data-time-widget style="margin-top: var(--space-5);">
+          <div class="time-card">
+            <p class="time-place">Ho Tram / Saigon</p>
+            <p class="time-value" data-time-saigon aria-live="off">--:--</p>
+            <p class="time-date" data-date-saigon>&nbsp;</p>
+          </div>
+          <div class="time-card">
+            <p class="time-place" data-label-local>Your time</p>
+            <p class="time-value" data-time-local aria-live="off">--:--</p>
+            <p class="time-date" data-date-local>&nbsp;</p>
+          </div>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- ===================================================================
+       WHAT TO BRING
+       =================================================================== -->
+  <section class="section section--sand" id="what-to-bring">
+    <div class="container">
+      <div class="section-heading fade-in">
+        <h2>What to bring</h2>
+        <p>Items with a <strong>&ldquo;We&rsquo;ve got you covered&rdquo;</strong> badge — we'll have spares. Forgetting one isn't a crisis.</p>
+      </div>
+
+      <div class="packing-grid fade-in" data-packing-grid>
+        <!-- Rendered by main.js from content.js packingList -->
+      </div>
+    </div>
+  </section>
+
+  <div class="container section--tight fade-in">
+    <div class="callout callout-qr-row">
+      <div>
+        <h3>Still have a question?</h3>
+        <p>We're happy to help — <span data-field="contact-line-lowercase">text Richard at 626.319.1332 or join our WhatsApp group.</span></p>
+      </div>
+      <a class="qr-link" data-field-href="whatsapp-link" href="#" target="_blank" rel="noopener" aria-label="Open the WhatsApp group invite">
+        <img data-field-src="whatsapp-qr" src="assets/whatsapp-qr.png" alt="QR code to join the Thuy &amp; Richard - Ho Tram Wedding WhatsApp group" width="140" height="140">
+        <span>Scan to join</span>
+      </a>
+    </div>
+  </div>
+
+</main>
+
+<button type="button" class="back-to-top-fab" aria-label="Back to top">
+  <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true" style="width:22px;height:22px;"><path d="M12 19V5M5 12l7-7 7 7"/></svg>
+</button>
+
+<footer class="site-footer">
+  <div class="container footer-inner">
+    <div>
+      <p class="footer-names" data-field="couple-names">Partner One &amp; Partner Two</p>
+      <p class="footer-meta"><span data-field="location">Ho Tram, Vietnam</span> &middot; <span data-field="date-range">June 30–July 3, 2027</span></p>
+    </div>
+    <div>
+      <p>Questions? <span data-field="contact-line">Text Richard at 626.319.1332 or join our WhatsApp group (TBD).</span></p>
+    </div>
+  </div>
+</footer>
+
+<script src="content.js"></script>
+<script src="main.js"></script>
+</body>
+</html>
