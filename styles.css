@@ -96,12 +96,15 @@ body {
   color: var(--color-ink);
   background: var(--color-bone);
   -webkit-font-smoothing: antialiased;
-  /* "clip" (not "hidden") — "hidden" makes body an implicit scroll
-     container, which several mobile WebKit versions treat as the
-     containing block for position:fixed descendants, causing fixed
-     elements (like the back-to-top button) to scroll away with the
-     page instead of staying pinned to the viewport. */
-  overflow-x: clip;
+  /* No overflow-x rule here on purpose — any non-"visible" value on
+     body (including "clip") makes it an implicit scroll container on
+     several mobile WebKit versions, which some of those versions then
+     treat as the containing block for position:fixed descendants,
+     causing fixed elements (like the back-to-top button) to scroll
+     away with the page instead of staying pinned to the viewport.
+     Nothing on the site currently overflows horizontally, so this
+     isn't needed — if that changes, fix the offending element instead
+     of reaching for overflow-x on body/html. */
 }
 
 img { max-width: 100%; display: block; }

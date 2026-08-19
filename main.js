@@ -42,6 +42,39 @@ const ICONS = {
   golf: '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M6 21c3-1 9-1 12 0M9 21V6l8 3-8 3"/></svg>',
 };
 
+/* =============================================================================
+   Background scroll lock — used while the language modal or mobile nav
+   is open. Deliberately avoids `overflow: hidden` on body/html: several
+   mobile WebKit versions treat that as body becoming the containing
+   block for position:fixed descendants (breaking things like the
+   back-to-top button) and don't always undo it cleanly once overflow
+   is reset. Pinning body with `position: fixed` sidesteps that. Uses a
+   depth counter so the modal and nav can lock/unlock independently
+   without stepping on each other.
+   ========================================================================== */
+let scrollLockDepth = 0;
+let scrollLockY = 0;
+function lockBodyScroll() {
+  if (scrollLockDepth === 0) {
+    scrollLockY = window.scrollY;
+    document.body.style.position = "fixed";
+    document.body.style.top = `-${scrollLockY}px`;
+    document.body.style.left = "0";
+    document.body.style.right = "0";
+  }
+  scrollLockDepth++;
+}
+function unlockBodyScroll() {
+  scrollLockDepth = Math.max(0, scrollLockDepth - 1);
+  if (scrollLockDepth === 0) {
+    document.body.style.position = "";
+    document.body.style.top = "";
+    document.body.style.left = "";
+    document.body.style.right = "";
+    window.scrollTo(0, scrollLockY);
+  }
+}
+
 document.addEventListener("DOMContentLoaded", () => {
   initLanguageSwitcher();
   initLanguageModal();
@@ -217,15 +250,16 @@ function initLanguageModal() {
 
   if (!I18N.hasSeenModal()) {
     modal.hidden = false;
-    document.body.style.overflow = "hidden";
+    lockBodyScroll();
   }
 }
 
 function closeLanguageModal() {
   const modal = document.getElementById("language-modal");
   if (!modal) return;
+  if (modal.hidden) return;
   modal.hidden = true;
-  document.body.style.overflow = "";
+  unlockBodyScroll();
 }
 
 /* =============================================================================
@@ -333,14 +367,16 @@ function initHeaderNav() {
   toggle.addEventListener("click", () => {
     const isOpen = nav.classList.toggle("is-open");
     toggle.setAttribute("aria-expanded", String(isOpen));
-    document.body.style.overflow = isOpen ? "hidden" : "";
+    if (isOpen) lockBodyScroll();
+    else unlockBodyScroll();
   });
 
   nav.querySelectorAll("a").forEach((link) => {
     link.addEventListener("click", () => {
+      const wasOpen = nav.classList.contains("is-open");
       nav.classList.remove("is-open");
       toggle.setAttribute("aria-expanded", "false");
-      document.body.style.overflow = "";
+      if (wasOpen) unlockBodyScroll();
     });
   });
 
