@@ -60,47 +60,46 @@
        HERO
        =================================================================== -->
   <section class="hero">
-    <div class="container">
-      <span class="eyebrow" data-field="date-range">June 30–July 3, 2027</span>
-      <h1 data-field="couple-names">Partner One &amp; Partner Two</h1>
-      <p class="hero-date">
-        <span data-field="location">Ho Tram, Vietnam</span>
-      </p>
-      <p class="hero-anchor"><span data-field="anchor-line">Come celebrate our union around the chaos of Saigon, then spend the rest of the time relaxing at the resort.</span></p>
-      <div class="hero-actions">
-        <a href="#rsvp" class="btn btn--primary" data-i18n="index.rsvpBtn">RSVP</a>
-        <a href="travel.html" class="btn btn--secondary" data-i18n="index.travelInfoBtn">Travel info</a>
-      </div>
+    <div class="container hero-grid">
+      <picture class="hero-photo fade-in">
+        <source srcset="assets/couple-hero-landscape.webp" type="image/webp">
+        <img src="assets/couple-hero-landscape.jpg" alt="Illustrated portrait of Thuy and Richard embracing under a vine-wrapped pergola" width="1600" height="1200" loading="eager" fetchpriority="high">
+      </picture>
+      <div class="hero-text">
+        <span class="eyebrow" data-field="date-range">June 30–July 3, 2027</span>
+        <h1 data-field="couple-names">Partner One &amp; Partner Two</h1>
+        <p class="hero-date">
+          <span data-field="location">Ho Tram, Vietnam</span>
+        </p>
+        <p class="hero-anchor"><span data-field="anchor-line">Come celebrate our union around the chaos of Saigon, then spend the rest of the time relaxing at the resort.</span></p>
+        <div class="hero-actions">
+          <a href="#rsvp" class="btn btn--primary" data-i18n="index.rsvpBtn">RSVP</a>
+          <a href="travel.html" class="btn btn--secondary" data-i18n="index.travelInfoBtn">Travel info</a>
+        </div>
 
-      <!-- Countdown -->
-      <div class="countdown" data-countdown aria-live="off">
-        <p class="visually-hidden countdown-label-lead" data-i18n="index.countdownHidden">Counting down to arrival day</p>
-        <div class="countdown-unit">
-          <span class="countdown-number" data-cd-days>–</span>
-          <span class="countdown-label" data-i18n="index.countdownDays">Days</span>
-        </div>
-        <div class="countdown-unit">
-          <span class="countdown-number" data-cd-hours>–</span>
-          <span class="countdown-label" data-i18n="index.countdownHours">Hours</span>
-        </div>
-        <div class="countdown-unit">
-          <span class="countdown-number" data-cd-mins>–</span>
-          <span class="countdown-label" data-i18n="index.countdownMinutes">Minutes</span>
-        </div>
-        <div class="countdown-unit">
-          <span class="countdown-number" data-cd-secs>–</span>
-          <span class="countdown-label" data-i18n="index.countdownSeconds">Seconds</span>
+        <!-- Countdown -->
+        <div class="countdown" data-countdown aria-live="off">
+          <p class="visually-hidden countdown-label-lead" data-i18n="index.countdownHidden">Counting down to arrival day</p>
+          <div class="countdown-unit">
+            <span class="countdown-number" data-cd-days>–</span>
+            <span class="countdown-label" data-i18n="index.countdownDays">Days</span>
+          </div>
+          <div class="countdown-unit">
+            <span class="countdown-number" data-cd-hours>–</span>
+            <span class="countdown-label" data-i18n="index.countdownHours">Hours</span>
+          </div>
+          <div class="countdown-unit">
+            <span class="countdown-number" data-cd-mins>–</span>
+            <span class="countdown-label" data-i18n="index.countdownMinutes">Minutes</span>
+          </div>
+          <div class="countdown-unit">
+            <span class="countdown-number" data-cd-secs>–</span>
+            <span class="countdown-label" data-i18n="index.countdownSeconds">Seconds</span>
+          </div>
         </div>
       </div>
     </div>
   </section>
-
-  <div class="container" style="padding-top: var(--space-7);">
-    <picture class="hero-photo fade-in">
-      <source srcset="assets/couple-hero-landscape.webp" type="image/webp">
-      <img src="assets/couple-hero-landscape.jpg" alt="Illustrated portrait of Thuy and Richard embracing under a vine-wrapped pergola" width="1600" height="1200" loading="lazy">
-    </picture>
-  </div>
 
   <!-- ===================================================================
        THE SHORT VERSION

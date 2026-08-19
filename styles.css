@@ -96,7 +96,12 @@ body {
   color: var(--color-ink);
   background: var(--color-bone);
   -webkit-font-smoothing: antialiased;
-  overflow-x: hidden;
+  /* "clip" (not "hidden") — "hidden" makes body an implicit scroll
+     container, which several mobile WebKit versions treat as the
+     containing block for position:fixed descendants, causing fixed
+     elements (like the back-to-top button) to scroll away with the
+     page instead of staying pinned to the viewport. */
+  overflow-x: clip;
 }
 
 img { max-width: 100%; display: block; }
@@ -370,6 +375,14 @@ summary:focus-visible,
 
 @media (max-width: 767px) {
   .nav-toggle { display: inline-flex; }
+  .site-logo { font-size: clamp(0.95rem, 4.2vw, 1.25rem); }
+  .header-actions { gap: var(--space-2); }
+  .lang-switcher-btn { padding: 0 var(--space-2); gap: 3px; }
+}
+@media (max-width: 400px) {
+  .lang-switcher-code { display: none; }
+  .lang-switcher-btn { padding: 0 var(--space-1); min-width: 44px; justify-content: center; }
+}
   .main-nav {
     position: fixed;
     /* .site-header uses backdrop-filter, which makes it the containing
@@ -399,11 +412,17 @@ summary:focus-visible,
    5. Hero
    -------------------------------------------------------------------- */
 .hero {
-  padding-block: var(--space-9) var(--space-8);
+  padding-block: var(--space-8);
   background:
     radial-gradient(120% 100% at 50% -10%, var(--color-accent-soft) 0%, transparent 60%),
     linear-gradient(180deg, var(--color-bone) 0%, var(--color-sand) 100%);
   text-align: center;
+}
+.hero-grid {
+  display: grid;
+  grid-template-columns: 1fr;
+  align-items: center;
+  gap: var(--space-6);
 }
 .hero .eyebrow { display: block; margin-bottom: var(--space-4); }
 .hero h1 { margin-bottom: var(--space-3); }
@@ -426,6 +445,21 @@ summary:focus-visible,
   gap: var(--space-3);
   justify-content: center;
   flex-wrap: wrap;
+}
+
+@media (min-width: 900px) {
+  .hero-grid {
+    grid-template-columns: 1fr 1fr;
+    gap: var(--space-8);
+  }
+  .hero-text { text-align: left; }
+  .hero-text .hero-date,
+  .hero-text .hero-anchor,
+  .hero-text .countdown {
+    margin-left: 0;
+    margin-right: 0;
+  }
+  .hero-text .hero-actions { justify-content: flex-start; }
 }
 
 /* Countdown */
@@ -841,8 +875,8 @@ fieldset.fieldset {
 
 .back-to-top-fab {
   position: fixed;
-  right: var(--space-5);
-  bottom: var(--space-5);
+  right: calc(var(--space-5) + env(safe-area-inset-right, 0px));
+  bottom: calc(var(--space-5) + env(safe-area-inset-bottom, 0px));
   width: 48px; height: 48px;
   border-radius: 50%;
   background: var(--color-accent);
