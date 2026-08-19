@@ -254,8 +254,13 @@ summary:focus-visible,
   position: sticky;
   top: 0;
   z-index: 500;
-  background: rgba(251, 248, 243, 0.92);
-  backdrop-filter: saturate(180%) blur(10px);
+  /* No backdrop-filter here on purpose — combined with the back-to-top
+     button's position:fixed elsewhere on the page, it triggers a real
+     Chromium compositing bug where the button's layer silently stops
+     painting (confirmed: removing backdrop-filter alone fixes it, and
+     none of the usual layer-promotion workarounds on either element
+     did). A near-opaque solid background reads almost identically. */
+  background: rgba(251, 248, 243, 0.97);
   border-bottom: 1px solid var(--color-border-soft);
   height: var(--header-height);
 }
@@ -383,10 +388,9 @@ summary:focus-visible,
   .lang-switcher-btn { padding: 0 var(--space-2); gap: 3px; }
   .main-nav {
     position: fixed;
-    /* .site-header uses backdrop-filter, which makes it the containing
-       block for fixed descendants — so this can't rely on `bottom: 0`
-       (measured against the header's own ~68px box, collapsing to zero
-       height). An explicit viewport-relative height sidesteps that. */
+    /* Explicit viewport-relative height (rather than `bottom: 0`)
+       avoids ever depending on .site-header's box as a containing
+       block for this. */
     top: var(--header-height);
     right: 0;
     left: 0;
