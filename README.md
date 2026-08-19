@@ -31,6 +31,7 @@ wedding-site/
 ├── styles.css           Shared design system (all pages)
 ├── main.js               Shared behavior (nav, forms, accordions, etc.)
 ├── content.js            ← EDIT THIS to fill in your real details
+├── i18n.js                Language switcher + all translated strings (see "Multi-language support" below)
 ├── assets/
 │   ├── couple-hero-landscape.jpg   Homepage hero image (+ .webp)
 │   └── couple-illustration-original.webp   Untouched original artwork
@@ -210,6 +211,60 @@ real CORS and a readable response, but that's a build step and a hosting
 decision the brief explicitly wanted to avoid for now. Apps Script is the
 right trade-off: no backend to run, and it writes straight into the sheet you
 already have.
+
+## Multi-language support
+
+The site supports **English, Mandarin (中文), Vietnamese (Tiếng Việt), and
+Indonesian (Bahasa Indonesia)**. First-time visitors to `index.html` see a
+modal letting them pick a language (or "Continue in English"); after that,
+a flag/code selector in the top-right of the nav lets anyone switch anytime,
+on any page. The choice is remembered (`localStorage`) and carries across
+page navigation.
+
+**⚠️ Translation quality:** the Mandarin, Vietnamese, and Indonesian text was
+AI-drafted, not written or reviewed by a native speaker. It should read fine,
+but before this goes out to guests, it's worth having a native speaker
+(especially one on Thuy's side for Vietnamese) skim the FAQ answers and RSVP
+form in particular — those have the most nuance and the highest cost if
+something reads oddly.
+
+### How it works
+
+- **`content.js`** stays the single English source of truth for all real
+  content (itinerary, FAQs, packing list) — nothing about its structure
+  changed for i18n, only stable `id` fields were added to each item so
+  translations can reference them.
+- **`i18n.js`** holds every UI string (nav labels, buttons, form labels,
+  error messages) plus per-language *overrides* of the English content, keyed
+  by those same `id`s. If a translation is missing for a given key/language,
+  the site quietly falls back to English rather than showing a blank.
+- **`main.js`** re-renders the page whenever the language changes: static
+  text via `data-i18n="some.key"` attributes (swept automatically), and
+  dynamic content (itinerary, FAQs, packing grid, RSVP form) via dedicated
+  render functions that call into `i18n.js`.
+
+### Editing an existing translation
+
+Open `i18n.js` and search for the string (English UI text is easiest to grep
+for). UI strings live in `UI_STRINGS` near the top; content translations
+(FAQs, itinerary, packing list) live in `CONTENT_TRANSLATIONS`, one block per
+language (`zh`, `vi`, `id`). Edit the value for the language you want to fix
+— no other file needs to change.
+
+### Adding a new language
+
+1. Add an entry to `SUPPORTED_LANGUAGES` in `i18n.js` (language code, emoji
+   flag, native-language label, and the BCP-47 `htmlLang` code).
+2. Add the language's locale to `LOCALE_MAP` (used for date/time formatting
+   — e.g. `"ja-JP"`).
+3. Add a translation for every key in `UI_STRINGS` (each entry is an object
+   keyed by language code — add yours alongside `en`/`zh`/`vi`/`id`).
+4. Add a new block to `CONTENT_TRANSLATIONS` for the language, following the
+   shape of the existing `zh`/`vi`/`id` blocks (`faqCategories`, `faqs`,
+   `itinerary`, `packingList`). Missing entries fall back to English, so this
+   can be filled in incrementally.
+5. No HTML changes needed — the language modal and nav selector both build
+   their options from `SUPPORTED_LANGUAGES` automatically.
 
 ## Deploying (GitHub Pages — free)
 

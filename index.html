@@ -20,25 +20,39 @@
 <link rel="stylesheet" href="styles.css">
 </head>
 <body>
-<a class="skip-link" href="#main">Skip to content</a>
+<a class="skip-link" href="#main" data-i18n="skip-link">Skip to content</a>
 <span id="top"></span>
 
 <header class="site-header">
   <div class="container">
     <a href="index.html" class="site-logo" data-field="couple-names">Partner One &amp; Partner Two</a>
-    <button class="nav-toggle" type="button" aria-expanded="false" aria-controls="main-nav" aria-label="Toggle navigation menu">
-      <span></span>
-    </button>
-    <nav class="main-nav" id="main-nav" aria-label="Primary">
-      <ul>
-        <li><a href="index.html">Home</a></li>
-        <li><a href="travel.html">Travel</a></li>
-        <li><a href="schedule.html">Schedule</a></li>
-        <li><a href="guide.html">Guide</a></li>
-      </ul>
-    </nav>
+    <div class="header-actions">
+      <div class="lang-switcher" data-lang-switcher></div>
+      <button class="nav-toggle" type="button" aria-expanded="false" aria-controls="main-nav" data-i18n-aria="nav.toggleAria" aria-label="Toggle navigation menu">
+        <span></span>
+      </button>
+      <nav class="main-nav" id="main-nav" aria-label="Primary">
+        <ul>
+          <li><a href="index.html" data-i18n="nav.home">Home</a></li>
+          <li><a href="travel.html" data-i18n="nav.travel">Travel</a></li>
+          <li><a href="schedule.html" data-i18n="nav.schedule">Schedule</a></li>
+          <li><a href="guide.html" data-i18n="nav.guide">Guide</a></li>
+        </ul>
+      </nav>
+    </div>
   </div>
 </header>
+
+<!-- First-visit language picker. Shows once per browser (tracked in
+     localStorage), then never again unless storage is cleared. -->
+<div class="lang-modal-overlay" id="language-modal" hidden>
+  <div class="lang-modal" role="dialog" aria-modal="true" aria-labelledby="lang-modal-heading">
+    <h2 id="lang-modal-heading" data-i18n="modal.title">Choose your language</h2>
+    <p data-i18n="modal.subtitle">You can change this anytime from the menu at the top of the page.</p>
+    <div class="lang-modal-options" id="lang-modal-options"></div>
+    <button type="button" class="lang-modal-dismiss" data-modal-dismiss data-i18n="modal.continueEnglish">Continue in English</button>
+  </div>
+</div>
 
 <main id="main">
 
@@ -54,28 +68,28 @@
       </p>
       <p class="hero-anchor"><span data-field="anchor-line">Come celebrate our union around the chaos of Saigon, then spend the rest of the time relaxing at the resort.</span></p>
       <div class="hero-actions">
-        <a href="#rsvp" class="btn btn--primary">RSVP</a>
-        <a href="travel.html" class="btn btn--secondary">Travel info</a>
+        <a href="#rsvp" class="btn btn--primary" data-i18n="index.rsvpBtn">RSVP</a>
+        <a href="travel.html" class="btn btn--secondary" data-i18n="index.travelInfoBtn">Travel info</a>
       </div>
 
       <!-- Countdown -->
       <div class="countdown" data-countdown aria-live="off">
-        <p class="visually-hidden countdown-label-lead">Counting down to arrival day</p>
+        <p class="visually-hidden countdown-label-lead" data-i18n="index.countdownHidden">Counting down to arrival day</p>
         <div class="countdown-unit">
           <span class="countdown-number" data-cd-days>–</span>
-          <span class="countdown-label">Days</span>
+          <span class="countdown-label" data-i18n="index.countdownDays">Days</span>
         </div>
         <div class="countdown-unit">
           <span class="countdown-number" data-cd-hours>–</span>
-          <span class="countdown-label">Hours</span>
+          <span class="countdown-label" data-i18n="index.countdownHours">Hours</span>
         </div>
         <div class="countdown-unit">
           <span class="countdown-number" data-cd-mins>–</span>
-          <span class="countdown-label">Minutes</span>
+          <span class="countdown-label" data-i18n="index.countdownMinutes">Minutes</span>
         </div>
         <div class="countdown-unit">
           <span class="countdown-number" data-cd-secs>–</span>
-          <span class="countdown-label">Seconds</span>
+          <span class="countdown-label" data-i18n="index.countdownSeconds">Seconds</span>
         </div>
       </div>
     </div>
@@ -94,35 +108,35 @@
   <section class="section" id="short-version">
     <div class="container">
       <div class="section-heading text-center fade-in">
-        <span class="eyebrow">The short version</span>
-        <h2>Everything you need to know, fast</h2>
-        <p style="margin-inline:auto;">For guests who want the headline before the details. Click on each for more details.</p>
+        <span class="eyebrow" data-i18n="index.eyebrowShort">The short version</span>
+        <h2 data-i18n="index.shortHeading">Everything you need to know, fast</h2>
+        <p style="margin-inline:auto;" data-i18n="index.shortSub">For guests who want the headline before the details. Click on each for more details.</p>
       </div>
 
       <div class="card-grid card-grid--4">
         <div class="info-card fade-in">
           <span class="icon-badge" aria-hidden="true"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="3" y="4" width="18" height="17" rx="2"/><path d="M16 2v4M8 2v4M3 10h18"/></svg></span>
-          <h3>When</h3>
-          <p data-field="date-range">June 30–July 3, 2027. Ceremony is Day 2 — full itinerary on the schedule page.</p>
-          <a class="card-link" href="schedule.html">See the schedule &rarr;</a>
+          <h3 data-i18n="index.cardWhenTitle">When</h3>
+          <p data-index-card-when>June 30–July 3, 2027. Ceremony is Day 2 — full itinerary on the schedule page.</p>
+          <a class="card-link" href="schedule.html" data-i18n="index.cardWhenLink">See the schedule &rarr;</a>
         </div>
         <div class="info-card fade-in">
           <span class="icon-badge" aria-hidden="true"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M12 21s7-6.5 7-12a7 7 0 1 0-14 0c0 5.5 7 12 7 12z"/><circle cx="12" cy="9" r="2.5"/></svg></span>
-          <h3>Where</h3>
-          <p>Ho Tram, Vietnam — fly into Saigon (SGN), then it's about 2.5–3 hours to the coast.</p>
-          <a class="card-link" href="travel.html">Travel &amp; getting there &rarr;</a>
+          <h3 data-i18n="index.cardWhereTitle">Where</h3>
+          <p data-i18n="index.cardWhereDesc">Ho Tram, Vietnam — fly into Saigon (SGN), then it's about 2.5–3 hours to the coast.</p>
+          <a class="card-link" href="travel.html" data-i18n="index.cardWhereLink">Travel &amp; getting there &rarr;</a>
         </div>
         <div class="info-card fade-in">
           <span class="icon-badge" aria-hidden="true"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M20 14.5A8.5 8.5 0 1 1 9.5 4a7 7 0 0 0 10.5 10.5z"/></svg></span>
-          <h3>How long to stay</h3>
-          <p>The core weekend is four days. We'd love it if you came a few days early to see Saigon first.</p>
-          <a class="card-link" href="schedule.html#arrival-plan">Suggested arrival plan &rarr;</a>
+          <h3 data-i18n="index.cardHowLongTitle">How long to stay</h3>
+          <p data-i18n="index.cardHowLongDesc">The core weekend is four days. We'd love it if you came a few days early to see Saigon first.</p>
+          <a class="card-link" href="schedule.html#arrival-plan" data-i18n="index.cardHowLongLink">Suggested arrival plan &rarr;</a>
         </div>
         <div class="info-card fade-in">
           <span class="icon-badge" aria-hidden="true"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M8 3 4 6l1.5 3L8 8v13h8V8l2.5 1L20 6l-4-3-2 2h-4z"/></svg></span>
-          <h3>What to wear</h3>
-          <p>Beach-wedding attire: light fabrics, nothing heavy. It will be hot, and rain is possible.</p>
-          <a class="card-link" href="guide.html#what-to-bring">Full packing list &rarr;</a>
+          <h3 data-i18n="index.cardWearTitle">What to wear</h3>
+          <p data-i18n="index.cardWearDesc">Beach-wedding attire: light fabrics, nothing heavy. It will be hot, and rain is possible.</p>
+          <a class="card-link" href="guide.html#what-to-bring" data-i18n="index.cardWearLink">Full packing list &rarr;</a>
         </div>
       </div>
     </div>
@@ -136,21 +150,21 @@
   <section class="section" id="rsvp">
     <div class="container-narrow">
       <div class="section-heading text-center fade-in">
-        <span class="eyebrow">The main event</span>
-        <h2>RSVP</h2>
-        <p style="margin-inline:auto;">Please respond by <strong data-field="rsvp-deadline">December 31, 2026</strong> so we can finalize headcounts with the resort.</p>
+        <span class="eyebrow" data-i18n="rsvp.eyebrow">The main event</span>
+        <h2 data-i18n="rsvp.heading">RSVP</h2>
+        <p style="margin-inline:auto;"><span data-i18n="rsvp.deadlinePrefix">Please respond by</span> <strong data-field="rsvp-deadline">December 31, 2026</strong> <span data-i18n="rsvp.deadlineSuffix">so we can finalize headcounts with the resort.</span></p>
       </div>
 
       <div class="rsvp-panel fade-in">
         <form id="rsvp-form" novalidate>
           <div class="form-grid form-grid--2">
             <div class="field">
-              <label for="firstName">First name</label>
+              <label for="firstName" data-i18n="rsvp.firstName">First name</label>
               <input type="text" id="firstName" name="firstName" autocomplete="given-name" required aria-describedby="firstName-error">
               <p class="field-error" data-error-for="firstName" id="firstName-error"></p>
             </div>
             <div class="field">
-              <label for="lastName">Last name</label>
+              <label for="lastName" data-i18n="rsvp.lastName">Last name</label>
               <input type="text" id="lastName" name="lastName" autocomplete="family-name" required aria-describedby="lastName-error">
               <p class="field-error" data-error-for="lastName" id="lastName-error"></p>
             </div>
@@ -158,27 +172,27 @@
 
           <div class="form-grid form-grid--2" style="margin-top: var(--space-5);">
             <div class="field">
-              <label for="email">Email</label>
+              <label for="email" data-i18n="rsvp.email">Email</label>
               <input type="email" id="email" name="email" autocomplete="email" required aria-describedby="email-error">
               <p class="field-error" data-error-for="email" id="email-error"></p>
             </div>
             <div class="field">
-              <label for="phone">Phone number</label>
+              <label for="phone" data-i18n="rsvp.phone">Phone number</label>
               <input type="tel" id="phone" name="phone" autocomplete="tel" required aria-describedby="phone-error">
               <p class="field-error" data-error-for="phone" id="phone-error"></p>
             </div>
           </div>
 
           <fieldset class="fieldset" style="margin-top: var(--space-5);">
-            <legend>Will you be attending?</legend>
+            <legend data-i18n="rsvp.attendingLegend">Will you be attending?</legend>
             <div class="radio-grid">
               <label class="radio-item">
                 <input type="radio" name="attending" value="yes">
-                <span>Joyfully, yes</span>
+                <span data-i18n="rsvp.attendingYes">Joyfully, yes</span>
               </label>
               <label class="radio-item">
                 <input type="radio" name="attending" value="no">
-                <span>Sadly, can't make it</span>
+                <span data-i18n="rsvp.attendingNo">Sadly, can't make it</span>
               </label>
             </div>
             <p class="field-error" id="attending-error"></p>
@@ -186,11 +200,11 @@
 
           <!-- Additional guests -->
           <fieldset class="fieldset" style="margin-top: var(--space-5);" id="party-section">
-            <legend>Bringing anyone with you?</legend>
-            <p class="hint">Kids are more than welcome! Add additional guests in your party — each one gets their own dietary preference.</p>
+            <legend data-i18n="rsvp.bringingLegend">Bringing anyone with you?</legend>
+            <p class="hint" data-i18n="rsvp.bringingHint">Kids are more than welcome! Add additional guests in your party — each one gets their own dietary preference.</p>
             <div class="guest-list" id="guest-list"></div>
             <div style="margin-top: var(--space-4); display:flex; align-items:center; gap: var(--space-3); flex-wrap: wrap;">
-              <button type="button" class="btn btn--secondary btn--small" id="add-guest-btn">+ Add a guest</button>
+              <button type="button" class="btn btn--secondary btn--small" id="add-guest-btn" data-i18n="rsvp.addGuest">+ Add a guest</button>
             </div>
           </fieldset>
 
@@ -198,23 +212,23 @@
                Checkboxes are optional and mutually exclusive per row (JS-enforced
                in main.js) so a guest can leave it blank or change their mind. -->
           <fieldset class="fieldset" style="margin-top: var(--space-5);" id="excursion-section" hidden>
-            <legend>Vung Tau day trip (July 2)</legend>
-            <p class="hint">Both are great options — this is a free day, not an obligation. Check a box for each person so we can size the shuttle.</p>
+            <legend data-i18n="rsvp.vungTauLegend">Vung Tau day trip (July 2)</legend>
+            <p class="hint" data-i18n="rsvp.vungTauHint">Both are great options — this is a free day, not an obligation. Check a box for each person so we can size the shuttle.</p>
             <div class="vung-tau-list" id="vung-tau-list">
               <div class="vung-tau-row" data-vung-tau-row="primary">
-                <span class="vung-tau-name">You</span>
+                <span class="vung-tau-name" data-i18n="rsvp.you">You</span>
                 <div class="checkbox-tri">
                   <label class="checkbox-item">
                     <input type="checkbox" name="excursion" value="yes" disabled>
-                    <span>Join shuttle</span>
+                    <span data-i18n="rsvp.joinShuttle">Join shuttle</span>
                   </label>
                   <label class="checkbox-item">
                     <input type="checkbox" name="excursion" value="no" disabled>
-                    <span>Stay at resort</span>
+                    <span data-i18n="rsvp.stayAtResort">Stay at resort</span>
                   </label>
                   <label class="checkbox-item">
                     <input type="checkbox" name="excursion" value="unsure" disabled>
-                    <span>Not sure</span>
+                    <span data-i18n="rsvp.notSure">Not sure</span>
                   </label>
                 </div>
               </div>
@@ -224,54 +238,54 @@
 
           <!-- Dietary restrictions (primary RSVP-er) -->
           <fieldset class="fieldset" style="margin-top: var(--space-5);">
-            <legend>Dietary restrictions (for you)</legend>
+            <legend data-i18n="rsvp.dietaryLegend">Dietary restrictions (for you)</legend>
             <div class="dietary-inline">
-              <label><input type="checkbox" name="dietary" value="Vegetarian"> Vegetarian</label>
-              <label><input type="checkbox" name="dietary" value="Vegan"> Vegan</label>
-              <label><input type="checkbox" name="dietary" value="Gluten sensitivity"> Gluten sensitivity</label>
-              <label><input type="checkbox" name="dietary" value="Nut allergy"> Nut allergy</label>
-              <label><input type="checkbox" name="dietary" value="Shellfish allergy"> Shellfish allergy</label>
+              <label><input type="checkbox" name="dietary" value="Vegetarian"> <span data-i18n="rsvp.vegetarian">Vegetarian</span></label>
+              <label><input type="checkbox" name="dietary" value="Vegan"> <span data-i18n="rsvp.vegan">Vegan</span></label>
+              <label><input type="checkbox" name="dietary" value="Gluten sensitivity"> <span data-i18n="rsvp.glutenSensitivity">Gluten sensitivity</span></label>
+              <label><input type="checkbox" name="dietary" value="Nut allergy"> <span data-i18n="rsvp.nutAllergy">Nut allergy</span></label>
+              <label><input type="checkbox" name="dietary" value="Shellfish allergy"> <span data-i18n="rsvp.shellfishAllergy">Shellfish allergy</span></label>
             </div>
             <div class="field" style="margin-top: var(--space-3);">
-              <label for="dietaryOther">Anything else we should know?</label>
-              <input type="text" id="dietaryOther" name="dietaryOther" placeholder="e.g. severe allergy details">
+              <label for="dietaryOther" data-i18n="rsvp.anythingElseKnow">Anything else we should know?</label>
+              <input type="text" id="dietaryOther" name="dietaryOther" placeholder="e.g. severe allergy details" data-i18n-placeholder="rsvp.dietaryOtherPlaceholder">
             </div>
           </fieldset>
 
           <div class="field" style="margin-top: var(--space-5);">
-            <label for="mobilityNeeds">Mobility or accessibility needs</label>
-            <textarea id="mobilityNeeds" name="mobilityNeeds" placeholder="Let us know how we can make things easier for you — optional."></textarea>
+            <label for="mobilityNeeds" data-i18n="rsvp.mobilityLabel">Mobility or accessibility needs</label>
+            <textarea id="mobilityNeeds" name="mobilityNeeds" placeholder="Let us know how we can make things easier for you — optional." data-i18n-placeholder="rsvp.mobilityPlaceholder"></textarea>
           </div>
 
           <fieldset class="fieldset" style="margin-top: var(--space-5);">
-            <legend>Which nights will you be at the resort?</legend>
+            <legend data-i18n="rsvp.nightsLegend">Which nights will you be at the resort?</legend>
             <div class="checkbox-grid">
               <label class="checkbox-item">
                 <input type="checkbox" name="nights" value="June 30">
-                <span>June 30</span>
+                <span data-i18n="rsvp.june30">June 30</span>
               </label>
               <label class="checkbox-item">
                 <input type="checkbox" name="nights" value="July 1">
-                <span>July 1 (wedding day)</span>
+                <span data-i18n="rsvp.july1">July 1 (wedding day)</span>
               </label>
               <label class="checkbox-item">
                 <input type="checkbox" name="nights" value="July 2">
-                <span>July 2</span>
+                <span data-i18n="rsvp.july2">July 2</span>
               </label>
               <label class="checkbox-item">
                 <input type="checkbox" name="nights" value="July 3">
-                <span>July 3</span>
+                <span data-i18n="rsvp.july3">July 3</span>
               </label>
             </div>
           </fieldset>
 
           <div class="field" style="margin-top: var(--space-5);">
-            <label for="note">Anything else you'd like to tell us?</label>
-            <textarea id="note" name="note" placeholder="Optional note to us"></textarea>
+            <label for="note" data-i18n="rsvp.noteLabel">Anything else you'd like to tell us?</label>
+            <textarea id="note" name="note" placeholder="Optional note to us" data-i18n-placeholder="rsvp.notePlaceholder"></textarea>
           </div>
 
           <div style="margin-top: var(--space-6); display:flex; align-items:center; gap: var(--space-4); flex-wrap: wrap;">
-            <button type="submit" class="btn btn--primary" id="rsvp-submit-btn">Submit RSVP</button>
+            <button type="submit" class="btn btn--primary" id="rsvp-submit-btn" data-i18n="rsvp.submit">Submit RSVP</button>
             <p class="form-status" id="form-status" role="status" aria-live="polite"></p>
           </div>
 
@@ -280,9 +294,9 @@
 
         <div class="rsvp-success" id="rsvp-success" hidden tabindex="-1">
           <span class="success-icon" aria-hidden="true"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><path d="M20 6 9 17l-5-5"/></svg></span>
-          <h3>Thank you, <span data-success-name>friend</span>!</h3>
-          <p>Your RSVP is in. We can't wait to celebrate with you in Ho Tram.</p>
-          <p><a href="schedule.html">Check out the schedule &rarr;</a></p>
+          <h3 data-success-heading>Thank you, friend!</h3>
+          <p data-i18n="rsvp.successBody">Your RSVP is in. We can't wait to celebrate with you in Ho Tram.</p>
+          <p><a href="schedule.html" data-i18n="rsvp.successSchedule">Check out the schedule &rarr;</a></p>
         </div>
       </div>
     </div>
@@ -291,19 +305,19 @@
   <div class="container section--tight fade-in">
     <div class="callout callout-qr-row">
       <div>
-        <h3>Still have a question?</h3>
-        <p>We're happy to help — <span data-field="contact-line-lowercase">text Richard at 626.319.1332 or join our WhatsApp group.</span></p>
+        <h3 data-i18n="common.stillHaveQuestion">Still have a question?</h3>
+        <p><span data-i18n="common.happyToHelp">We're happy to help —</span> <span data-field="contact-line-lowercase">text Richard at 626.319.1332 or join our WhatsApp group.</span></p>
       </div>
-      <a class="qr-link" data-field-href="whatsapp-link" href="#" target="_blank" rel="noopener" aria-label="Open the WhatsApp group invite">
+      <a class="qr-link" data-field-href="whatsapp-link" href="#" target="_blank" rel="noopener" data-i18n-aria="common.whatsappAria" aria-label="Open the WhatsApp group invite">
         <img data-field-src="whatsapp-qr" src="assets/whatsapp-qr.png" alt="QR code to join the Thuy &amp; Richard - Ho Tram Wedding WhatsApp group" width="140" height="140">
-        <span>Scan to join</span>
+        <span data-i18n="common.scanToJoin">Scan to join</span>
       </a>
     </div>
   </div>
 
 </main>
 
-<button type="button" class="back-to-top-fab" aria-label="Back to top">
+<button type="button" class="back-to-top-fab" data-i18n-aria="common.backToTopAria" aria-label="Back to top">
   <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true" style="width:22px;height:22px;"><path d="M12 19V5M5 12l7-7 7 7"/></svg>
 </button>
 
@@ -314,12 +328,13 @@
       <p class="footer-meta"><span data-field="location">Ho Tram, Vietnam</span> &middot; <span data-field="date-range">June 30–July 3, 2027</span></p>
     </div>
     <div>
-      <p>Questions? <span data-field="contact-line">Text Richard at 626.319.1332 or join our WhatsApp group (TBD).</span></p>
+      <p><span data-i18n="footer.questions">Questions?</span> <span data-field="contact-line">Text Richard at 626.319.1332 or join our WhatsApp group (TBD).</span></p>
     </div>
   </div>
 </footer>
 
 <script src="content.js"></script>
+<script src="i18n.js"></script>
 <script src="main.js"></script>
 </body>
 </html>

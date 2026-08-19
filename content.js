@@ -149,6 +149,7 @@ var WEDDING_CONTENT = {
       vibe: "Arrive, exhale, eat.",
       events: [
         {
+          id: "arrivals",
           time: "All day",
           icon: "plane",
           title: "Arrivals into Saigon (SGN)",
@@ -156,6 +157,7 @@ var WEDDING_CONTENT = {
             "Land whenever your flight gets you here — there's no group arrival time. Grab is the easiest way to your hotel or straight to Ho Tram.",
         },
         {
+          id: "shuttle-arrival",
           time: "TODO",
           icon: "shuttle",
           title: "Shuttle windows to Ho Tram",
@@ -163,6 +165,7 @@ var WEDDING_CONTENT = {
             "TODO: confirm times. We'll run a few shuttle windows from HCMC for anyone who wants to travel together instead of Grabbing it solo.",
         },
         {
+          id: "dinner",
           time: "TODO: 7:00 PM (placeholder)",
           icon: "food",
           title: "Welcome dinner",
@@ -179,6 +182,7 @@ var WEDDING_CONTENT = {
       vibe: "The wedding day.",
       events: [
         {
+          id: "ceremony",
           time: "TODO: ceremony time",
           icon: "ceremony",
           title: "Ceremony",
@@ -186,12 +190,14 @@ var WEDDING_CONTENT = {
             "Run-of-show is still being finalized. TODO: confirm ceremony start time and location on property.",
         },
         {
+          id: "cocktail",
           time: "TODO: cocktail hour",
           icon: "free",
           title: "Cocktail hour",
           description: "TODO: confirm time. Drinks, snacks, breathing room.",
         },
         {
+          id: "reception",
           time: "TODO: reception time",
           icon: "food",
           title: "Reception",
@@ -208,6 +214,7 @@ var WEDDING_CONTENT = {
       vibe: "Free day — go to Vung Tau, or don't.",
       events: [
         {
+          id: "shuttle-vungtau",
           time: "TODO: confirm times",
           icon: "shuttle",
           title: "Shuttle to Vung Tau (optional)",
@@ -215,6 +222,7 @@ var WEDDING_CONTENT = {
             "A day trip for anyone who wants it — coastline, seafood, a change of scenery. Departure and return times are TODO: confirm times.",
         },
         {
+          id: "relax",
           time: "All day",
           icon: "free",
           title: "Or: relax at the resort",
@@ -231,6 +239,7 @@ var WEDDING_CONTENT = {
       vibe: "Checkout, hugs, departures.",
       events: [
         {
+          id: "checkout",
           time: "TODO: checkout time",
           icon: "hotel",
           title: "Checkout",
@@ -238,6 +247,7 @@ var WEDDING_CONTENT = {
             "TODO: confirm standard checkout time and whether late checkout is available for the block.",
         },
         {
+          id: "departures",
           time: "TODO",
           icon: "plane",
           title: "Departures",
@@ -341,38 +351,45 @@ var WEDDING_CONTENT = {
   // What to bring — used by guide.html
   // -------------------------------------------------------------------
   packingList: [
-    { icon: "bug", label: "Mosquito repellent", spare: true, note: "Bring your own if you have a favorite — we'll have spares." },
-    { icon: "swim", label: "Shorts & swimwear", spare: false, note: "It will be hot. You'll want these daily." },
-    { icon: "umbrella", label: "Umbrella", spare: true, note: "Rain is possible. We'll have spares at the resort." },
-    { icon: "sandal", label: "Sandals", spare: true, note: "Easy, breathable, forgiving of sand. Spares available." },
-    { icon: "hat", label: "A hat", spare: false, note: "Sun protection you'll actually wear." },
-    { icon: "attire", label: "Beach-wedding attire", spare: false, note: "Light fabrics, nothing heavy. Heat and humidity are guaranteed." },
-    { icon: "sun", label: "Sunscreen", spare: true, note: "Reef-safe if you have it. The sun does not negotiate." },
-    { icon: "golf", label: "Golf gear (optional)", spare: false, note: "There's a course nearby. Clubs are rentable; there's a dress code.", link: "https://thebluffshotram.com/", linkLabel: "The Bluffs Ho Tram Strip" },
+    { id: "mosquito", icon: "bug", label: "Mosquito repellent", spare: true, note: "Bring your own if you have a favorite — we'll have spares." },
+    { id: "swimwear", icon: "swim", label: "Shorts & swimwear", spare: false, note: "It will be hot. You'll want these daily." },
+    { id: "umbrella", icon: "umbrella", label: "Umbrella", spare: true, note: "Rain is possible. We'll have spares at the resort." },
+    { id: "sandals", icon: "sandal", label: "Sandals", spare: true, note: "Easy, breathable, forgiving of sand. Spares available." },
+    { id: "hat", icon: "hat", label: "A hat", spare: false, note: "Sun protection you'll actually wear." },
+    { id: "attire", icon: "attire", label: "Beach-wedding attire", spare: false, note: "Light fabrics, nothing heavy. Heat and humidity are guaranteed." },
+    { id: "sunscreen", icon: "sun", label: "Sunscreen", spare: true, note: "Reef-safe if you have it. The sun does not negotiate." },
+    { id: "golf", icon: "golf", label: "Golf gear (optional)", spare: false, note: "There's a course nearby. Clubs are rentable; there's a dress code.", link: "https://thebluffshotram.com/", linkLabel: "The Bluffs Ho Tram Strip" },
   ],
 };
+
+// Shared with i18n.js, which needs the same weekday logic to build
+// translated shuttle-time strings for the other languages.
+function shuttleGroupForDate(iso) {
+  var day = new Date(iso + "T00:00:00").getDay(); // 0 = Sun ... 6 = Sat
+  if (day === 0) return "sun";
+  if (day === 5) return "fri";
+  if (day === 6) return "sat";
+  return "mon-thu";
+}
 
 // Auto-fills the Day 1 shuttle-to-Ho-Tram and Day 4 departure-shuttle
 // itinerary entries from SHUTTLE_SCHEDULE, based on the actual weekday of
 // the arrival/departure dates above. Re-runs correctly if you ever change
 // the wedding year — no manual weekday math required.
 (function fillShuttleItineraryTimes() {
-  function shuttleGroupForDate(iso) {
-    var day = new Date(iso + "T00:00:00").getDay(); // 0 = Sun ... 6 = Sat
-    if (day === 0) return "sun";
-    if (day === 5) return "fri";
-    if (day === 6) return "sat";
-    return "mon-thu";
-  }
-  function findEvent(dayNumber, title) {
+  function findEvent(dayNumber, eventId) {
     var day = WEDDING_CONTENT.itinerary.filter(function (d) { return d.day === dayNumber; })[0];
-    return day && day.events.filter(function (e) { return e.title === title; })[0];
+    return day && day.events.filter(function (e) { return e.id === eventId; })[0];
   }
 
   var arrivalGroup = shuttleGroupForDate(WEDDING_CONTENT.dates.arrival);
   var departureGroup = shuttleGroupForDate(WEDDING_CONTENT.dates.departure);
+  // Exposed so i18n.js can build translated versions of these two events
+  // without re-deriving the weekday groups itself.
+  WEDDING_CONTENT.shuttleSchedule.arrivalGroup = arrivalGroup;
+  WEDDING_CONTENT.shuttleSchedule.departureGroup = departureGroup;
 
-  var shuttleToHoTram = findEvent(1, "Shuttle windows to Ho Tram");
+  var shuttleToHoTram = findEvent(1, "shuttle-arrival");
   if (shuttleToHoTram) {
     var toHoTramTimes = SHUTTLE_SCHEDULE.toHoTram[arrivalGroup].join(" or ");
     shuttleToHoTram.time = toHoTramTimes;
@@ -380,7 +397,7 @@ var WEDDING_CONTENT = {
       "The resort shuttle from HCMC runs " + toHoTramTimes + " on your arrival day. Seats need to be booked ahead with the resort's Reservations/Concierge team — see the Travel page for the full weekly schedule. Otherwise, Grab works fine too.";
   }
 
-  var departures = findEvent(4, "Departures");
+  var departures = findEvent(4, "departures");
   if (departures) {
     var toHcmcTimes = SHUTTLE_SCHEDULE.toHCMC[departureGroup].join(" or ");
     departures.time = toHcmcTimes;

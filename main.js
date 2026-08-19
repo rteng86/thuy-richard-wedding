@@ -43,16 +43,190 @@ const ICONS = {
 };
 
 document.addEventListener("DOMContentLoaded", () => {
-  initContentBindings();
+  initLanguageSwitcher();
+  initLanguageModal();
+  applyLanguage(I18N.getLang());
   initHeaderNav();
   initFadeIn();
   initBackToTop();
   initCountdown();
   initRsvpForm();
-  initFaqPage();
-  initSchedulePage();
-  initGuidePage();
+  initFaqInteractivity();
+  initScheduleInteractivity();
+  initTimeWidget();
 });
+
+/* =============================================================================
+   Language switching — nav selector, first-visit modal, and the single
+   applyLanguage() pass that (re)renders every language-dependent thing on
+   the page. Safe to call multiple times (e.g. when the user picks a new
+   language from the selector) since every render step it calls replaces
+   content wholesale rather than appending.
+   ========================================================================== */
+function applyLanguage(lang) {
+  I18N.setLang(lang);
+  document.documentElement.lang = (I18N.languages.find((l) => l.code === lang) || {}).htmlLang || lang;
+
+  applyDataI18n(document);
+  initContentBindings();
+  applyIndexCardWhen();
+  relocalizeGuestRows();
+  renderFaqContent();
+  renderTimeline();
+  renderPackingGrid();
+  applyGuideCardLinks();
+  updateLanguageSwitcherUI();
+}
+
+// The homepage's "When" card shows the date range inline in a full
+// sentence, so it can't just use data-field="date-range" (that would
+// clobber the rest of the sentence) — build it from the template instead.
+function applyIndexCardWhen() {
+  const el = document.querySelector("[data-index-card-when]");
+  if (!el || !window.WEDDING_CONTENT) return;
+  el.textContent = I18N.t("index.cardWhenDesc", {
+    dateRange: formatDateRange(WEDDING_CONTENT.dates.arrival, WEDDING_CONTENT.dates.departure),
+  });
+}
+
+// A few guide.html paragraphs contain an inline link, so they use
+// {link}-templated strings rather than plain data-i18n text.
+function applyGuideCardLinks() {
+  const safetyP = document.querySelector("[data-guide-safety-p2]");
+  if (safetyP) {
+    const link = `<a href="travel.html#faq-grab">${I18N.t("guide.travelPageLink")}</a>`;
+    safetyP.innerHTML = I18N.t("guide.safetyP2", { link });
+  }
+
+  const eatP = document.querySelector("[data-guide-eat-card3-desc]");
+  if (eatP) {
+    const link = `<a href="https://guide.michelin.com/us/en/restaurants?q=Ho+Chi+Minh+City+vietnam&seeAll=true" target="_blank" rel="noopener">${I18N.t("guide.michelinLink")}</a>`;
+    eatP.innerHTML = I18N.t("guide.eatCard3Desc", { link });
+  }
+}
+
+// Sweeps every [data-i18n] (plain text) and [data-i18n-html] (contains
+// markup, no variables) element within `root` and fills it from UI_STRINGS.
+// Runs on every applyLanguage() call, and also on just-created elements
+// (guest rows, Vung Tau rows) so they pick up the current language
+// immediately instead of waiting for the next language switch.
+function applyDataI18n(root) {
+  root.querySelectorAll("[data-i18n]").forEach((el) => {
+    el.textContent = I18N.t(el.dataset.i18n);
+  });
+  root.querySelectorAll("[data-i18n-html]").forEach((el) => {
+    el.innerHTML = I18N.t(el.dataset.i18nHtml);
+  });
+  root.querySelectorAll("[data-i18n-aria]").forEach((el) => {
+    el.setAttribute("aria-label", I18N.t(el.dataset.i18nAria));
+  });
+  root.querySelectorAll("[data-i18n-placeholder]").forEach((el) => {
+    el.setAttribute("placeholder", I18N.t(el.dataset.i18nPlaceholder));
+  });
+}
+
+function initLanguageSwitcher() {
+  const container = document.querySelector("[data-lang-switcher]");
+  if (!container) return;
+
+  container.innerHTML = `
+    <button type="button" class="lang-switcher-btn" aria-haspopup="true" aria-expanded="false" data-i18n-aria="langswitch.aria">
+      <span data-lang-current-flag>🇬🇧</span>
+      <span class="lang-switcher-code" data-lang-current-code>EN</span>
+    </button>
+    <ul class="lang-switcher-menu" role="menu" hidden>
+      ${I18N.languages
+        .map(
+          (l) => `
+        <li role="none">
+          <button type="button" role="menuitem" class="lang-switcher-option" data-lang-option="${l.code}">
+            <span aria-hidden="true">${l.flag}</span> <span>${l.label}</span>
+          </button>
+        </li>`
+        )
+        .join("")}
+    </ul>
+  `;
+
+  const btn = container.querySelector(".lang-switcher-btn");
+  const menu = container.querySelector(".lang-switcher-menu");
+
+  btn.addEventListener("click", () => {
+    const isOpen = !menu.hidden;
+    menu.hidden = isOpen;
+    btn.setAttribute("aria-expanded", String(!isOpen));
+  });
+
+  document.addEventListener("click", (e) => {
+    if (!container.contains(e.target)) {
+      menu.hidden = true;
+      btn.setAttribute("aria-expanded", "false");
+    }
+  });
+
+  container.querySelectorAll("[data-lang-option]").forEach((opt) => {
+    opt.addEventListener("click", () => {
+      menu.hidden = true;
+      btn.setAttribute("aria-expanded", "false");
+      applyLanguage(opt.dataset.langOption);
+    });
+  });
+}
+
+function updateLanguageSwitcherUI() {
+  const current = I18N.languages.find((l) => l.code === I18N.getLang()) || I18N.languages[0];
+  document.querySelectorAll("[data-lang-current-flag]").forEach((el) => (el.textContent = current.flag));
+  document.querySelectorAll("[data-lang-current-code]").forEach((el) => (el.textContent = current.code.toUpperCase()));
+  document.querySelectorAll("[data-lang-option]").forEach((opt) => {
+    opt.classList.toggle("is-active", opt.dataset.langOption === current.code);
+  });
+}
+
+// First-visit language modal — index.html only (see the modal markup
+// there). Shows once per browser (tracked in localStorage) and lets a
+// guest pick their language before they start reading.
+function initLanguageModal() {
+  const modal = document.getElementById("language-modal");
+  if (!modal) return;
+
+  const optionsEl = modal.querySelector("#lang-modal-options");
+  if (optionsEl) {
+    optionsEl.innerHTML = I18N.languages
+      .map(
+        (l) => `
+        <button type="button" class="lang-modal-option" data-lang-option="${l.code}">
+          <span class="lang-modal-flag" aria-hidden="true">${l.flag}</span>
+          <span>${l.label}</span>
+        </button>`
+      )
+      .join("");
+  }
+
+  modal.querySelectorAll("[data-lang-option]").forEach((btn) => {
+    btn.addEventListener("click", () => {
+      applyLanguage(btn.dataset.langOption);
+      I18N.markModalSeen();
+      closeLanguageModal();
+    });
+  });
+
+  modal.querySelector("[data-modal-dismiss]")?.addEventListener("click", () => {
+    I18N.markModalSeen();
+    closeLanguageModal();
+  });
+
+  if (!I18N.hasSeenModal()) {
+    modal.hidden = false;
+    document.body.style.overflow = "hidden";
+  }
+}
+
+function closeLanguageModal() {
+  const modal = document.getElementById("language-modal");
+  if (!modal) return;
+  modal.hidden = true;
+  document.body.style.overflow = "";
+}
 
 /* =============================================================================
    Floating "back to top" button — present on every page
@@ -73,15 +247,16 @@ function initBackToTop() {
    ========================================================================== */
 function formatDate(iso) {
   const d = new Date(`${iso}T00:00:00`);
-  return d.toLocaleDateString("en-US", { month: "long", day: "numeric", year: "numeric" });
+  return d.toLocaleDateString(I18N.localeCode(), { month: "long", day: "numeric", year: "numeric" });
 }
 
 function formatDateRange(startIso, endIso) {
+  const locale = I18N.localeCode();
   const start = new Date(`${startIso}T00:00:00`);
   const end = new Date(`${endIso}T00:00:00`);
   const sameMonth = start.getMonth() === end.getMonth();
-  const startStr = start.toLocaleDateString("en-US", { month: "long", day: "numeric" });
-  const endStr = end.toLocaleDateString("en-US", sameMonth ? { day: "numeric" } : { month: "long", day: "numeric" });
+  const startStr = start.toLocaleDateString(locale, { month: "long", day: "numeric" });
+  const endStr = end.toLocaleDateString(locale, sameMonth ? { day: "numeric" } : { month: "long", day: "numeric" });
   return `${startStr}–${endStr}, ${end.getFullYear()}`;
 }
 
@@ -96,7 +271,7 @@ function initContentBindings() {
     "partner2": c.coupleNames.partner2,
     "location": c.location.display,
     "airport-city": c.location.airportCity,
-    "anchor-line": c.anchorLine,
+    "anchor-line": I18N.t("index.hero.anchor"),
     "venue-name": c.venue.name,
     "hotel-name": c.venue.hotelName,
     "hotel-room-block-code": c.venue.roomBlockCode,
@@ -104,8 +279,16 @@ function initContentBindings() {
     "hotel-contact-phone": c.venue.contactPhone,
     "hotel-address": c.venue.address,
     "contact-email": c.contactEmail,
-    "contact-line": `Text ${c.contact.textName} at ${c.contact.textPhone} or join <a href="${c.contact.whatsappLink}" target="_blank" rel="noopener">${c.contact.whatsappNote}</a>.`,
-    "contact-line-lowercase": `text ${c.contact.textName} at ${c.contact.textPhone} or join <a href="${c.contact.whatsappLink}" target="_blank" rel="noopener">${c.contact.whatsappNote}</a>.`,
+    "contact-line": I18N.t("common.contactLine", {
+      name: c.contact.textName,
+      phone: c.contact.textPhone,
+      link: `<a href="${c.contact.whatsappLink}" target="_blank" rel="noopener">${I18N.t("common.whatsappGroupNote")}</a>`,
+    }),
+    "contact-line-lowercase": I18N.t("common.contactLineLower", {
+      name: c.contact.textName,
+      phone: c.contact.textPhone,
+      link: `<a href="${c.contact.whatsappLink}" target="_blank" rel="noopener">${I18N.t("common.whatsappGroupNote")}</a>`,
+    }),
     "date-range": formatDateRange(c.dates.arrival, c.dates.departure),
     "date-arrival": formatDate(c.dates.arrival),
     "date-wedding": formatDate(c.dates.wedding),
@@ -212,7 +395,7 @@ function initCountdown() {
     const diff = target.getTime() - Date.now();
     if (diff <= 0) {
       el.querySelector(".countdown-label-lead")?.replaceChildren(
-        document.createTextNode("We're here!")
+        document.createTextNode(I18N.t("index.countdownArrived"))
       );
       [daysEl, hoursEl, minsEl, secsEl].forEach((n) => n && (n.textContent = "0"));
       clearInterval(timer);
@@ -293,7 +476,7 @@ function initRsvpForm() {
 
     if (errors.length) {
       errors.forEach(({ field, message }) => showFieldError(form, field, message));
-      statusEl.textContent = "Please fix the highlighted fields.";
+      statusEl.textContent = I18N.t("rsvp.fixHighlighted");
       statusEl.dataset.state = "error";
       errors[0]?.field && form.querySelector(`[name="${errors[0].field}"]`)?.focus();
       return;
@@ -316,31 +499,31 @@ function addGuestRow(guestList, addGuestBtn) {
   row.dataset.guestIndex = String(idx);
   row.innerHTML = `
     <div class="guest-row-header">
-      <h4>Guest ${idx}</h4>
-      <button type="button" class="remove-guest-btn" aria-label="Remove guest ${idx}">Remove</button>
+      <h4>${escapeHtml(I18N.t("rsvp.guestHeading", { n: idx }))}</h4>
+      <button type="button" class="remove-guest-btn" aria-label="${escapeHtml(I18N.t("rsvp.removeAria", { n: idx }))}" data-i18n="rsvp.remove">${escapeHtml(I18N.t("rsvp.remove"))}</button>
     </div>
     <div class="form-grid form-grid--2">
       <div class="field">
-        <label for="guest-${idx}-first">First name</label>
+        <label for="guest-${idx}-first" data-i18n="rsvp.firstName">${escapeHtml(I18N.t("rsvp.firstName"))}</label>
         <input type="text" id="guest-${idx}-first" name="guest-${idx}-first" autocomplete="off">
         <p class="field-error" data-error-for="guest-${idx}-first"></p>
       </div>
       <div class="field">
-        <label for="guest-${idx}-last">Last name</label>
+        <label for="guest-${idx}-last" data-i18n="rsvp.lastName">${escapeHtml(I18N.t("rsvp.lastName"))}</label>
         <input type="text" id="guest-${idx}-last" name="guest-${idx}-last" autocomplete="off">
         <p class="field-error" data-error-for="guest-${idx}-last"></p>
       </div>
     </div>
     <div class="field" style="margin-top: var(--space-3); max-width: 220px;">
-      <label for="guest-${idx}-age">Age, if a child</label>
+      <label for="guest-${idx}-age" data-i18n="rsvp.ageLabel">${escapeHtml(I18N.t("rsvp.ageLabel"))}</label>
       <select id="guest-${idx}-age" name="guest-${idx}-age">
-        <option value="">Leave blank if an adult</option>
+        <option value="" data-i18n="rsvp.ageBlank">${escapeHtml(I18N.t("rsvp.ageBlank"))}</option>
         ${CHILD_AGE_OPTIONS}
       </select>
     </div>
     <div class="field" style="margin-top: var(--space-3);">
-      <label for="guest-${idx}-dietary">Dietary needs (optional)</label>
-      <input type="text" id="guest-${idx}-dietary" name="guest-${idx}-dietary" placeholder="e.g. vegetarian, nut allergy">
+      <label for="guest-${idx}-dietary" data-i18n="rsvp.dietaryNeedsLabel">${escapeHtml(I18N.t("rsvp.dietaryNeedsLabel"))}</label>
+      <input type="text" id="guest-${idx}-dietary" name="guest-${idx}-dietary" placeholder="${escapeHtml(I18N.t("rsvp.dietaryNeedsPlaceholder"))}" data-i18n-placeholder="rsvp.dietaryNeedsPlaceholder">
     </div>
   `;
   guestList.appendChild(row);
@@ -362,14 +545,36 @@ function addGuestRow(guestList, addGuestBtn) {
   }
 }
 
+// Re-localizes the parts of already-created guest rows that need a {n}
+// variable (so plain data-i18n can't cover them): the "Guest N" heading,
+// its remove-button aria-label, and the Vung Tau row's name placeholder —
+// but only while that placeholder is still showing, not a typed name.
+function relocalizeGuestRows() {
+  document.querySelectorAll(".guest-row").forEach((row) => {
+    const idx = row.dataset.guestIndex;
+    const heading = row.querySelector(".guest-row-header h4");
+    if (heading) heading.textContent = I18N.t("rsvp.guestHeading", { n: idx });
+    const removeBtn = row.querySelector(".remove-guest-btn");
+    if (removeBtn) removeBtn.setAttribute("aria-label", I18N.t("rsvp.removeAria", { n: idx }));
+  });
+  document.querySelectorAll(".vung-tau-row").forEach((row) => {
+    const idx = row.dataset.vungTauRow;
+    if (idx === "primary") return;
+    const first = document.getElementById(`guest-${idx}-first`)?.value.trim();
+    const last = document.getElementById(`guest-${idx}-last`)?.value.trim();
+    const nameEl = row.querySelector(".vung-tau-name");
+    if (!first && !last && nameEl) nameEl.textContent = I18N.t("rsvp.guestHeading", { n: idx });
+  });
+}
+
 // Mirrors a guest's typed name into their Vung Tau row label, live —
-// falls back to "Guest N" until they type something.
+// falls back to the translated "Guest N" until they type something.
 function updateVungTauName(idx) {
   const first = document.getElementById(`guest-${idx}-first`)?.value.trim() || "";
   const last = document.getElementById(`guest-${idx}-last`)?.value.trim() || "";
   const fullName = [first, last].filter(Boolean).join(" ");
   const label = document.querySelector(`.vung-tau-row[data-vung-tau-row="${idx}"] .vung-tau-name`);
-  if (label) label.textContent = fullName || `Guest ${idx}`;
+  if (label) label.textContent = fullName || I18N.t("rsvp.guestHeading", { n: idx });
 }
 
 function addVungTauRow(idx) {
@@ -382,19 +587,19 @@ function addVungTauRow(idx) {
   row.className = "vung-tau-row";
   row.dataset.vungTauRow = String(idx);
   row.innerHTML = `
-    <span class="vung-tau-name">Guest ${idx}</span>
+    <span class="vung-tau-name">${escapeHtml(I18N.t("rsvp.guestHeading", { n: idx }))}</span>
     <div class="checkbox-tri">
       <label class="checkbox-item">
         <input type="checkbox" name="guest-${idx}-excursion" value="yes" ${isDisabled ? "disabled" : ""}>
-        <span>Join shuttle</span>
+        <span data-i18n="rsvp.joinShuttle">${escapeHtml(I18N.t("rsvp.joinShuttle"))}</span>
       </label>
       <label class="checkbox-item">
         <input type="checkbox" name="guest-${idx}-excursion" value="no" ${isDisabled ? "disabled" : ""}>
-        <span>Stay at resort</span>
+        <span data-i18n="rsvp.stayAtResort">${escapeHtml(I18N.t("rsvp.stayAtResort"))}</span>
       </label>
       <label class="checkbox-item">
         <input type="checkbox" name="guest-${idx}-excursion" value="unsure" ${isDisabled ? "disabled" : ""}>
-        <span>Not sure</span>
+        <span data-i18n="rsvp.notSure">${escapeHtml(I18N.t("rsvp.notSure"))}</span>
       </label>
     </div>
   `;
@@ -406,25 +611,25 @@ function validateForm(form) {
   const get = (name) => form.querySelector(`[name="${name}"]`);
   const val = (name) => get(name)?.value.trim() || "";
 
-  if (!val("firstName")) errors.push({ field: "firstName", message: "First name is required." });
-  if (!val("lastName")) errors.push({ field: "lastName", message: "Last name is required." });
+  if (!val("firstName")) errors.push({ field: "firstName", message: I18N.t("rsvp.err.firstName") });
+  if (!val("lastName")) errors.push({ field: "lastName", message: I18N.t("rsvp.err.lastName") });
 
   const email = val("email");
   if (!email) {
-    errors.push({ field: "email", message: "Email is required." });
+    errors.push({ field: "email", message: I18N.t("rsvp.err.email") });
   } else if (!/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(email)) {
-    errors.push({ field: "email", message: "Enter a valid email address." });
+    errors.push({ field: "email", message: I18N.t("rsvp.err.emailInvalid") });
   }
 
   const phone = val("phone");
   if (!phone) {
-    errors.push({ field: "phone", message: "Phone number is required." });
+    errors.push({ field: "phone", message: I18N.t("rsvp.err.phone") });
   } else if (!/^[+()\-.\s\d]{7,}$/.test(phone)) {
-    errors.push({ field: "phone", message: "Enter a valid phone number." });
+    errors.push({ field: "phone", message: I18N.t("rsvp.err.phoneInvalid") });
   }
 
   if (!form.querySelector('input[name="attending"]:checked')) {
-    errors.push({ field: "attending", message: "Please let us know if you're attending." });
+    errors.push({ field: "attending", message: I18N.t("rsvp.err.attending") });
   }
 
   // Guest rows: require first + last name only for rows that have any input filled
@@ -434,8 +639,8 @@ function validateForm(form) {
     const first = firstEl.value.trim();
     const last = get(`guest-${i}-last`)?.value.trim() || "";
     if (first || last) {
-      if (!first) errors.push({ field: `guest-${i}-first`, message: "First name is required for this guest." });
-      if (!last) errors.push({ field: `guest-${i}-last`, message: "Last name is required for this guest." });
+      if (!first) errors.push({ field: `guest-${i}-first`, message: I18N.t("rsvp.err.guestFirstName") });
+      if (!last) errors.push({ field: `guest-${i}-last`, message: I18N.t("rsvp.err.guestLastName") });
     }
   }
 
@@ -515,8 +720,8 @@ function submitRsvp(form, { submitBtn, statusEl, successPanel, errorBanner }) {
   const rows = [primary, ...guests];
 
   submitBtn.disabled = true;
-  submitBtn.innerHTML = '<span class="spinner" aria-hidden="true"></span> Sending...';
-  statusEl.textContent = "Sending your RSVP...";
+  submitBtn.innerHTML = `<span class="spinner" aria-hidden="true"></span> ${I18N.t("rsvp.sending")}`;
+  statusEl.textContent = I18N.t("rsvp.sendingStatus");
   statusEl.dataset.state = "loading";
 
   if (!RSVP_ENDPOINT || RSVP_ENDPOINT === "PASTE_YOUR_APPS_SCRIPT_URL_HERE") {
@@ -550,15 +755,15 @@ function submitRsvp(form, { submitBtn, statusEl, successPanel, errorBanner }) {
 function showRsvpSuccess(form, successPanel, primary) {
   form.hidden = true;
   successPanel.hidden = false;
-  const nameSpan = successPanel.querySelector("[data-success-name]");
-  if (nameSpan) nameSpan.textContent = primary.firstName || "there";
+  const heading = successPanel.querySelector("[data-success-heading]");
+  if (heading) heading.textContent = I18N.t("rsvp.successThanks", { name: primary.firstName || I18N.t("rsvp.successThanksFallback") });
   successPanel.focus?.();
   successPanel.scrollIntoView({ behavior: "smooth", block: "center" });
 }
 
 function handleRsvpFailure(form, { submitBtn, statusEl, errorBanner }, primary) {
   submitBtn.disabled = false;
-  submitBtn.textContent = "Submit RSVP";
+  submitBtn.textContent = I18N.t("rsvp.submit");
   statusEl.textContent = "";
   statusEl.dataset.state = "";
 
@@ -585,26 +790,31 @@ function handleRsvpFailure(form, { submitBtn, statusEl, errorBanner }, primary) 
   const body = encodeURIComponent(bodyLines.join("\n"));
   const mailto = `mailto:${contactEmail}?subject=${subject}&body=${body}`;
 
+  const whatsappLink = `<a href="${contact.whatsappLink}" target="_blank" rel="noopener">${I18N.t("common.whatsappGroupNote")}</a>`;
+  const emailLink = `<a href="${mailto}">${I18N.t("rsvp.err.emailUsDirectly")}</a>`;
+
   errorBanner.hidden = false;
-  errorBanner.innerHTML = `
-    We couldn't confirm your RSVP submitted — this can happen if the site is still on a placeholder
-    endpoint, or your connection dropped. Please try again, or text ${contact.textName} at
-    ${contact.textPhone} with your details, message
-    <a href="${contact.whatsappLink}" target="_blank" rel="noopener">${contact.whatsappNote}</a>,
-    or <a href="${mailto}">email us your RSVP directly</a> as a backup.
-  `;
+  errorBanner.innerHTML = I18N.t("rsvp.err.banner", {
+    name: contact.textName,
+    phone: contact.textPhone,
+    whatsappLink,
+    emailLink,
+  });
 }
 
 /* =============================================================================
    FAQ page: render from content.js + accordion deep-links + live search
    ========================================================================== */
-function renderFaqContent(faqRoot) {
+function renderFaqContent() {
+  const faqRoot = document.querySelector("[data-faq-root]");
+  if (!faqRoot || !window.WEDDING_CONTENT) return;
+
   const { faqCategories, faqs } = WEDDING_CONTENT;
   const tocEl = document.querySelector("[data-faq-toc]");
 
   if (tocEl) {
     tocEl.innerHTML = faqCategories
-      .map((cat) => `<a href="#${cat.id}">${escapeHtml(cat.label)}</a>`)
+      .map((cat) => `<a href="#${cat.id}">${escapeHtml(I18N.translateFaqCategory(cat))}</a>`)
       .join("");
   }
 
@@ -612,23 +822,24 @@ function renderFaqContent(faqRoot) {
     .map((cat) => {
       const items = faqs.filter((f) => f.category === cat.id);
       const itemsHtml = items
-        .map(
-          (faq) => `
+        .map((faq) => {
+          const t = I18N.translateFaq(faq);
+          return `
           <details class="faq-item" id="${faq.id}">
             <summary>
-              <span>${escapeHtml(faq.question)}</span>
+              <span>${escapeHtml(t.question)}</span>
               ${ICONS.chevron}
             </summary>
             <div class="faq-body">
-              ${faq.answer}
-              <a class="faq-back-to-top" href="#top">Back to top &uarr;</a>
+              ${t.answer}
+              <a class="faq-back-to-top" href="#top">${I18N.t("common.backToTopLink")}</a>
             </div>
-          </details>`
-        )
+          </details>`;
+        })
         .join("");
       return `
         <section class="faq-category" id="${cat.id}">
-          <h2>${escapeHtml(cat.label)}</h2>
+          <h2>${escapeHtml(I18N.translateFaqCategory(cat))}</h2>
           <div class="faq-list">${itemsHtml}</div>
         </section>`;
     })
@@ -646,13 +857,9 @@ function renderFaqContent(faqRoot) {
   if (hotelContact) hotelContact.textContent = c.venue.contactEmail;
 }
 
-function initFaqPage() {
+function initFaqInteractivity() {
   const faqRoot = document.querySelector("[data-faq-root]");
   if (!faqRoot || !window.WEDDING_CONTENT) return;
-
-  renderFaqContent(faqRoot);
-
-  const faqList = faqRoot;
 
   // Deep-link: open + scroll to the FAQ named in the URL hash
   const openFromHash = () => {
@@ -667,13 +874,15 @@ function initFaqPage() {
   openFromHash();
   window.addEventListener("hashchange", openFromHash);
 
-  // Back-to-top links inside each answer
-  faqList.querySelectorAll(".faq-back-to-top").forEach((btn) => {
-    btn.addEventListener("click", (e) => {
-      e.preventDefault();
-      document.querySelector("#top")?.scrollIntoView({ behavior: "smooth" });
-      document.querySelector(".faq-search input")?.focus();
-    });
+  // Back-to-top links inside each answer — delegated on the root so it
+  // keeps working after renderFaqContent() replaces the answers wholesale
+  // on a language switch.
+  faqRoot.addEventListener("click", (e) => {
+    const btn = e.target.closest(".faq-back-to-top");
+    if (!btn) return;
+    e.preventDefault();
+    document.querySelector("#top")?.scrollIntoView({ behavior: "smooth" });
+    document.querySelector(".faq-search input")?.focus();
   });
 
   // Live search/filter
@@ -704,11 +913,9 @@ function initFaqPage() {
 /* =============================================================================
    Schedule page: day selector + timeline render + .ics export
    ========================================================================== */
-function initSchedulePage() {
+function initScheduleInteractivity() {
   const container = document.querySelector("[data-timeline-root]");
   if (!container || !window.WEDDING_CONTENT) return;
-
-  renderTimeline(container);
 
   const selector = document.querySelector(".day-selector");
   if (selector) {
@@ -729,12 +936,21 @@ function initSchedulePage() {
   });
 }
 
-function renderTimeline(container) {
+function renderTimeline() {
+  const container = document.querySelector("[data-timeline-root]");
+  if (!container || !window.WEDDING_CONTENT) return;
   const { itinerary } = WEDDING_CONTENT;
 
-  itinerary.forEach((day, index) => {
+  // Preserve whichever day is currently selected across a language switch
+  // instead of always resetting to Day 1.
+  const activeBefore = container.querySelector(".timeline-day.is-active")?.dataset.day;
+  container.innerHTML = "";
+
+  itinerary.forEach((rawDay, index) => {
+    const day = I18N.translateItineraryDay(rawDay);
+    const isActive = activeBefore ? String(day.day) === activeBefore : index === 0;
     const section = document.createElement("section");
-    section.className = "timeline-day" + (index === 0 ? " is-active" : "");
+    section.className = "timeline-day" + (isActive ? " is-active" : "");
     section.dataset.day = String(day.day);
     section.id = `day-${day.day}`;
     section.setAttribute("role", "tabpanel");
@@ -762,6 +978,11 @@ function renderTimeline(container) {
       </div>
     `;
     container.appendChild(section);
+  });
+
+  // Keep the day-selector buttons' aria-selected in sync too.
+  document.querySelectorAll(".day-selector button[data-day]").forEach((btn) => {
+    btn.setAttribute("aria-selected", String(btn.dataset.day === (activeBefore || "1")));
   });
 }
 
@@ -817,16 +1038,12 @@ function icsEscape(str) {
 /* =============================================================================
    Guide page: packing grid render + live Saigon/local time widget
    ========================================================================== */
-function initGuidePage() {
-  renderPackingGrid();
-  initTimeWidget();
-}
-
 function renderPackingGrid() {
   const grid = document.querySelector("[data-packing-grid]");
   if (!grid || !window.WEDDING_CONTENT) return;
 
   grid.innerHTML = WEDDING_CONTENT.packingList
+    .map(I18N.translatePackingItem)
     .map(
       (item) => `
       <div class="packing-item">
@@ -837,7 +1054,7 @@ function renderPackingGrid() {
             ? ` <a href="${escapeHtml(item.link)}" target="_blank" rel="noopener">${escapeHtml(item.linkLabel || item.link)}</a>.`
             : ""
         }</p>
-        ${item.spare ? '<span class="spare-badge">We’ve got you covered</span>' : ""}
+        ${item.spare ? `<span class="spare-badge">${escapeHtml(I18N.t("guide.spareBadge"))}</span>` : ""}
       </div>`
     )
     .join("");
@@ -853,22 +1070,25 @@ function initTimeWidget() {
   const localDateEl = widget.querySelector("[data-date-local]");
   const localLabelEl = widget.querySelector("[data-label-local]");
 
-  try {
-    const tz = Intl.DateTimeFormat().resolvedOptions().timeZone;
-    if (localLabelEl && tz) localLabelEl.textContent = `Your time (${tz})`;
-  } catch (e) {
-    /* fall back to default label */
-  }
-
   function tick() {
     const now = new Date();
+    const locale = I18N.localeCode();
     const timeFmt = { hour: "2-digit", minute: "2-digit" };
     const dateFmt = { weekday: "short", month: "short", day: "numeric" };
 
-    if (saigonEl) saigonEl.textContent = now.toLocaleTimeString("en-US", { ...timeFmt, timeZone: "Asia/Ho_Chi_Minh" });
-    if (saigonDateEl) saigonDateEl.textContent = now.toLocaleDateString("en-US", { ...dateFmt, timeZone: "Asia/Ho_Chi_Minh" });
-    if (localEl) localEl.textContent = now.toLocaleTimeString("en-US", timeFmt);
-    if (localDateEl) localDateEl.textContent = now.toLocaleDateString("en-US", dateFmt);
+    if (saigonEl) saigonEl.textContent = now.toLocaleTimeString(locale, { ...timeFmt, timeZone: "Asia/Ho_Chi_Minh" });
+    if (saigonDateEl) saigonDateEl.textContent = now.toLocaleDateString(locale, { ...dateFmt, timeZone: "Asia/Ho_Chi_Minh" });
+    if (localEl) localEl.textContent = now.toLocaleTimeString(locale, timeFmt);
+    if (localDateEl) localDateEl.textContent = now.toLocaleDateString(locale, dateFmt);
+
+    if (localLabelEl) {
+      try {
+        const tz = Intl.DateTimeFormat().resolvedOptions().timeZone;
+        localLabelEl.textContent = tz ? `${I18N.t("guide.timeCardYourTime")} (${tz})` : I18N.t("guide.timeCardYourTime");
+      } catch (e) {
+        localLabelEl.textContent = I18N.t("guide.timeCardYourTime");
+      }
+    }
   }
 
   tick();

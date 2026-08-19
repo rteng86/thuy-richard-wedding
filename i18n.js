@@ -1,0 +1,795 @@
+/**
+ * i18n.js
+ * ---------------------------------------------------------------------------
+ * Language switching for the site. Supports English (default), Mandarin
+ * (Simplified), Vietnamese, and Indonesian.
+ *
+ * IMPORTANT — translation quality: the zh/vi/id strings below were drafted
+ * by AI, not reviewed by a native speaker of each language. They should read
+ * naturally, but before guests rely on them, it's worth having a native
+ * speaker skim each language once — especially the FAQ answers, which are
+ * the longest and most detail-heavy content on the site.
+ *
+ * HOW IT WORKS
+ * - UI_STRINGS holds every static string in the site's UI (nav, buttons,
+ *   form labels, callouts, etc.), keyed by a short id, one value per
+ *   language. Elements tagged data-i18n="some.key" in the HTML get their
+ *   text (or innerHTML, for a few keys that contain markup) set from here.
+ * - CONTENT_TRANSLATIONS holds translated overrides for the big data-driven
+ *   structures in content.js (FAQs, itinerary, packing list) keyed by the
+ *   same `id` fields already on those objects. content.js itself is never
+ *   translated or duplicated — English stays the single source of truth
+ *   there, and these are just per-language overlays main.js applies when
+ *   rendering.
+ * - The selected language is stored in localStorage so it persists across
+ *   pages and visits. Must load AFTER content.js and BEFORE main.js.
+ *
+ * TO ADD OR EDIT A TRANSLATION: find the key below and edit the value for
+ * that language. To add a brand-new static string elsewhere on the site,
+ * add a data-i18n="your.key" attribute to the element and a new entry here.
+ * ---------------------------------------------------------------------------
+ */
+
+var SUPPORTED_LANGUAGES = [
+  { code: "en", flag: "🇬🇧", label: "English", htmlLang: "en" },
+  { code: "zh", flag: "🇨🇳", label: "中文", htmlLang: "zh-CN" },
+  { code: "vi", flag: "🇻🇳", label: "Tiếng Việt", htmlLang: "vi" },
+  { code: "id", flag: "🇮🇩", label: "Bahasa Indonesia", htmlLang: "id" },
+];
+
+var LOCALE_MAP = { en: "en-US", zh: "zh-CN", vi: "vi-VN", id: "id-ID" };
+
+/* =============================================================================
+   UI_STRINGS — every static string in the site chrome/forms/callouts.
+   ========================================================================== */
+var UI_STRINGS = {
+  "skip-link": { en: "Skip to content", zh: "跳到主要内容", vi: "Bỏ qua đến nội dung chính", id: "Lewati ke konten utama" },
+  "nav.toggleAria": { en: "Toggle navigation menu", zh: "切换导航菜单", vi: "Bật/tắt menu điều hướng", id: "Buka/tutup menu navigasi" },
+  "nav.home": { en: "Home", zh: "首页", vi: "Trang chủ", id: "Beranda" },
+  "nav.travel": { en: "Travel", zh: "旅行", vi: "Du lịch", id: "Perjalanan" },
+  "nav.schedule": { en: "Schedule", zh: "日程", vi: "Lịch trình", id: "Jadwal" },
+  "nav.guide": { en: "Guide", zh: "指南", vi: "Cẩm nang", id: "Panduan" },
+
+  "langswitch.aria": { en: "Change language", zh: "切换语言", vi: "Đổi ngôn ngữ", id: "Ganti bahasa" },
+
+  "modal.title": { en: "Choose your language", zh: "选择语言", vi: "Chọn ngôn ngữ của bạn", id: "Pilih bahasa Anda" },
+  "modal.subtitle": { en: "You can change this anytime from the menu at the top of the page.", zh: "您可以随时在页面顶部的菜单中更改语言。", vi: "Bạn có thể thay đổi ngôn ngữ bất cứ lúc nào từ menu ở đầu trang.", id: "Anda dapat mengubahnya kapan saja dari menu di bagian atas halaman." },
+  "modal.continueEnglish": { en: "Continue in English", zh: "继续使用英文", vi: "Tiếp tục bằng tiếng Anh", id: "Lanjutkan dalam Bahasa Inggris" },
+
+  "footer.questions": { en: "Questions?", zh: "有疑问？", vi: "Có thắc mắc?", id: "Ada pertanyaan?" },
+  "common.whatsappGroupNote": { en: "our WhatsApp group", zh: "我们的WhatsApp群组", vi: "nhóm WhatsApp của chúng tôi", id: "grup WhatsApp kami" },
+  "common.contactLine": {
+    en: "Text {name} at {phone} or join {link}.",
+    zh: "发短信给{name}（{phone}），或加入{link}。",
+    vi: "Nhắn tin cho {name} theo số {phone}, hoặc tham gia {link}.",
+    id: "Kirim pesan ke {name} di {phone}, atau bergabung dengan {link}.",
+  },
+  "common.contactLineLower": {
+    en: "text {name} at {phone} or join {link}.",
+    zh: "发短信给{name}（{phone}），或加入{link}。",
+    vi: "nhắn tin cho {name} theo số {phone}, hoặc tham gia {link}.",
+    id: "kirim pesan ke {name} di {phone}, atau bergabung dengan {link}.",
+  },
+  "common.stillHaveQuestion": { en: "Still have a question?", zh: "还有其他问题？", vi: "Bạn vẫn còn thắc mắc?", id: "Masih punya pertanyaan?" },
+  "common.happyToHelp": { en: "We're happy to help —", zh: "我们很乐意为您解答——", vi: "Chúng tôi rất sẵn lòng giúp đỡ —", id: "Kami dengan senang hati membantu —" },
+  "common.scanToJoin": { en: "Scan to join", zh: "扫码加入", vi: "Quét mã để tham gia", id: "Pindai untuk bergabung" },
+  "common.whatsappAria": { en: "Open the WhatsApp group invite", zh: "打开WhatsApp群组邀请", vi: "Mở lời mời nhóm WhatsApp", id: "Buka undangan grup WhatsApp" },
+  "common.backToTopAria": { en: "Back to top", zh: "返回顶部", vi: "Lên đầu trang", id: "Kembali ke atas" },
+  "common.noResultsPrefix": { en: "No questions match your search. Try a different word, or", zh: "没有找到匹配的问题。请尝试其他关键词，或", vi: "Không có câu hỏi nào khớp với tìm kiếm của bạn. Hãy thử từ khóa khác, hoặc", id: "Tidak ada pertanyaan yang cocok dengan pencarian Anda. Coba kata lain, atau" },
+  "common.backToTopLink": { en: "Back to top ↑", zh: "返回顶部 ↑", vi: "Lên đầu trang ↑", id: "Kembali ke atas ↑" },
+  "common.or": { en: "or", zh: "或", vi: "hoặc", id: "atau" },
+
+  /* -------------------------- Home / index.html -------------------------- */
+  "index.hero.anchor": {
+    en: "Come celebrate our union around the chaos of Saigon, then spend the rest of the time relaxing at the resort.",
+    zh: "来西贡的热闹喧嚣中，与我们共同见证这段姻缘，再于度假村中尽情放松，度过余下的时光。",
+    vi: "Hãy đến cùng chúng tôi ăn mừng ngày trọng đại giữa nhịp sống sôi động của Sài Gòn, rồi dành phần thời gian còn lại để thư giãn tại khu nghỉ dưỡng.",
+    id: "Datanglah merayakan pernikahan kami di tengah hiruk pikuk Saigon, lalu habiskan sisa waktu untuk bersantai di resor.",
+  },
+  "index.rsvpBtn": { en: "RSVP", zh: "回复邀请", vi: "Xác nhận tham dự", id: "Konfirmasi Kehadiran" },
+  "index.travelInfoBtn": { en: "Travel info", zh: "旅行信息", vi: "Thông tin du lịch", id: "Info Perjalanan" },
+  "index.countdownHidden": { en: "Counting down to arrival day", zh: "倒计时至抵达日", vi: "Đếm ngược đến ngày đến", id: "Hitung mundur ke hari kedatangan" },
+  "index.countdownArrived": { en: "We're here!", zh: "我们到啦！", vi: "Chúng tôi đã đến rồi!", id: "Kami sudah tiba!" },
+  "index.countdownDays": { en: "Days", zh: "天", vi: "Ngày", id: "Hari" },
+  "index.countdownHours": { en: "Hours", zh: "小时", vi: "Giờ", id: "Jam" },
+  "index.countdownMinutes": { en: "Minutes", zh: "分钟", vi: "Phút", id: "Menit" },
+  "index.countdownSeconds": { en: "Seconds", zh: "秒", vi: "Giây", id: "Detik" },
+
+  "index.eyebrowShort": { en: "The short version", zh: "简明版", vi: "Tóm tắt nhanh", id: "Versi Singkat" },
+  "index.shortHeading": { en: "Everything you need to know, fast", zh: "快速了解所有要点", vi: "Mọi thứ bạn cần biết, thật nhanh", id: "Semua yang Perlu Anda Ketahui, Cepat" },
+  "index.shortSub": { en: "For guests who want the headline before the details. Click on each for more details.", zh: "如果您想先看重点再看细节——点击每张卡片查看详情。", vi: "Dành cho khách muốn nắm ý chính trước khi đọc chi tiết. Nhấn vào từng mục để xem thêm.", id: "Untuk tamu yang ingin tahu intinya dulu sebelum detail. Klik masing-masing untuk info lebih lanjut." },
+
+  "index.cardWhenTitle": { en: "When", zh: "时间", vi: "Khi nào", id: "Kapan" },
+  "index.cardWhenDesc": { en: "{dateRange}. Ceremony is Day 2 — full itinerary on the schedule page.", zh: "{dateRange}。婚礼仪式在第2天——完整行程请见日程页面。", vi: "{dateRange}. Lễ cưới diễn ra vào Ngày 2 — xem lịch trình đầy đủ tại trang lịch trình.", id: "{dateRange}. Upacara pernikahan di Hari ke-2 — lihat jadwal lengkap di halaman jadwal." },
+  "index.cardWhenLink": { en: "See the schedule →", zh: "查看日程 →", vi: "Xem lịch trình →", id: "Lihat jadwal →" },
+  "index.cardWhereTitle": { en: "Where", zh: "地点", vi: "Ở đâu", id: "Di Mana" },
+  "index.cardWhereDesc": { en: "Ho Tram, Vietnam — fly into Saigon (SGN), then it's about 2.5–3 hours to the coast.", zh: "越南头顿（Ho Tram）——先飞抵西贡（SGN），再驱车约2.5–3小时到海边。", vi: "Hồ Tràm, Việt Nam — bay đến Sài Gòn (SGN), sau đó di chuyển khoảng 2,5–3 giờ ra biển.", id: "Ho Tram, Vietnam — terbang ke Saigon (SGN), lalu sekitar 2,5–3 jam perjalanan ke pantai." },
+  "index.cardWhereLink": { en: "Travel & getting there →", zh: "旅行与交通 →", vi: "Du lịch & cách di chuyển →", id: "Perjalanan & cara ke sana →" },
+  "index.cardHowLongTitle": { en: "How long to stay", zh: "建议停留时间", vi: "Nên ở lại bao lâu", id: "Berapa Lama Menginap" },
+  "index.cardHowLongDesc": { en: "The core weekend is four days. We'd love it if you came a few days early to see Saigon first.", zh: "核心活动为期四天。欢迎您提前几天抵达，先逛逛西贡。", vi: "Sự kiện chính kéo dài bốn ngày. Chúng tôi rất mong bạn đến sớm vài ngày để khám phá Sài Gòn trước.", id: "Acara utama berlangsung selama empat hari. Kami senang jika Anda datang beberapa hari lebih awal untuk menjelajahi Saigon dulu." },
+  "index.cardHowLongLink": { en: "Suggested arrival plan →", zh: "建议行程安排 →", vi: "Gợi ý kế hoạch đến sớm →", id: "Saran rencana kedatangan →" },
+  "index.cardWearTitle": { en: "What to wear", zh: "穿着建议", vi: "Nên mặc gì", id: "Apa yang Dikenakan" },
+  "index.cardWearDesc": { en: "Beach-wedding attire: light fabrics, nothing heavy. It will be hot, and rain is possible.", zh: "海滩婚礼着装：轻薄面料为宜，避免厚重衣物。天气炎热，也可能下雨。", vi: "Trang phục dự tiệc cưới bãi biển: vải mỏng nhẹ, tránh đồ dày. Trời sẽ nóng và có thể có mưa.", id: "Busana pernikahan pantai: bahan ringan, hindari yang tebal. Cuaca akan panas, dan hujan mungkin turun." },
+  "index.cardWearLink": { en: "Full packing list →", zh: "完整打包清单 →", vi: "Danh sách hành lý đầy đủ →", id: "Daftar bawaan lengkap →" },
+
+  "rsvp.eyebrow": { en: "The main event", zh: "重头戏", vi: "Sự kiện chính", id: "Acara Utama" },
+  "rsvp.heading": { en: "RSVP", zh: "回复邀请", vi: "Xác Nhận Tham Dự", id: "Konfirmasi Kehadiran" },
+  "rsvp.deadlinePrefix": { en: "Please respond by", zh: "请于", vi: "Vui lòng phản hồi trước ngày", id: "Mohon konfirmasi sebelum" },
+  "rsvp.deadlineSuffix": { en: "so we can finalize headcounts with the resort.", zh: "前回复，以便我们向度假村确认最终人数。", vi: "để chúng tôi chốt số lượng khách với khu nghỉ dưỡng.", id: "agar kami dapat memastikan jumlah tamu dengan resor." },
+  "rsvp.firstName": { en: "First name", zh: "名字", vi: "Tên", id: "Nama Depan" },
+  "rsvp.lastName": { en: "Last name", zh: "姓氏", vi: "Họ", id: "Nama Belakang" },
+  "rsvp.email": { en: "Email", zh: "电子邮箱", vi: "Email", id: "Email" },
+  "rsvp.phone": { en: "Phone number", zh: "电话号码", vi: "Số điện thoại", id: "Nomor Telepon" },
+  "rsvp.attendingLegend": { en: "Will you be attending?", zh: "您是否会出席？", vi: "Bạn có tham dự không?", id: "Apakah Anda akan hadir?" },
+  "rsvp.attendingYes": { en: "Joyfully, yes", zh: "十分乐意，我会出席", vi: "Chắc chắn rồi, tôi sẽ tham dự", id: "Dengan senang hati, ya" },
+  "rsvp.attendingNo": { en: "Sadly, can't make it", zh: "很遗憾，无法出席", vi: "Rất tiếc, tôi không thể tham dự", id: "Sayangnya, tidak bisa hadir" },
+  "rsvp.err.attending": { en: "Please let us know if you're attending.", zh: "请告知我们您是否会出席。", vi: "Vui lòng cho chúng tôi biết bạn có tham dự không.", id: "Mohon beri tahu kami apakah Anda akan hadir." },
+
+  "rsvp.bringingLegend": { en: "Bringing anyone with you?", zh: "是否有同行人员？", vi: "Bạn có đi cùng ai không?", id: "Membawa Seseorang?" },
+  "rsvp.bringingHint": { en: "Kids are more than welcome! Add additional guests in your party — each one gets their own dietary preference.", zh: "非常欢迎携带小朋友！请在此添加同行人员——每位都可单独填写饮食需求。", vi: "Rất hoan nghênh các bé đi cùng! Hãy thêm những người đi cùng bạn — mỗi người có thể ghi riêng nhu cầu ăn uống.", id: "Anak-anak sangat disambut! Tambahkan tamu lain dalam rombongan Anda — masing-masing punya preferensi makanan sendiri." },
+  "rsvp.addGuest": { en: "+ Add a guest", zh: "+ 添加同行人员", vi: "+ Thêm người đi cùng", id: "+ Tambah Tamu" },
+  "rsvp.guestHeading": { en: "Guest {n}", zh: "同行人员 {n}", vi: "Khách {n}", id: "Tamu {n}" },
+  "rsvp.remove": { en: "Remove", zh: "移除", vi: "Xóa", id: "Hapus" },
+  "rsvp.removeAria": { en: "Remove guest {n}", zh: "移除同行人员 {n}", vi: "Xóa khách {n}", id: "Hapus tamu {n}" },
+  "rsvp.ageLabel": { en: "Age, if a child", zh: "年龄（如为儿童）", vi: "Tuổi (nếu là trẻ em)", id: "Usia (jika anak-anak)" },
+  "rsvp.ageBlank": { en: "Leave blank if an adult", zh: "成人请留空", vi: "Để trống nếu là người lớn", id: "Kosongkan jika dewasa" },
+  "rsvp.dietaryNeedsLabel": { en: "Dietary needs (optional)", zh: "饮食需求（选填）", vi: "Nhu cầu ăn uống (không bắt buộc)", id: "Kebutuhan Makanan (opsional)" },
+  "rsvp.dietaryNeedsPlaceholder": { en: "e.g. vegetarian, nut allergy", zh: "例如：素食、坚果过敏", vi: "vd: ăn chay, dị ứng đậu phộng", id: "cth: vegetarian, alergi kacang" },
+  "rsvp.err.guestFirstName": { en: "First name is required for this guest.", zh: "请填写该同行人员的名字。", vi: "Vui lòng nhập tên của khách này.", id: "Nama depan wajib diisi untuk tamu ini." },
+  "rsvp.err.guestLastName": { en: "Last name is required for this guest.", zh: "请填写该同行人员的姓氏。", vi: "Vui lòng nhập họ của khách này.", id: "Nama belakang wajib diisi untuk tamu ini." },
+
+  "rsvp.vungTauLegend": { en: "Vung Tau day trip (July 2)", zh: "头顿一日游（7月2日）", vi: "Chuyến đi Vũng Tàu trong ngày (2/7)", id: "Wisata Sehari ke Vung Tau (2 Juli)" },
+  "rsvp.vungTauHint": { en: "Both are great options — this is a free day, not an obligation. Check a box for each person so we can size the shuttle.", zh: "两个选项都很好——这是自由活动日，并非强制安排。请为每位同行人员勾选一项，以便我们安排合适的班车。", vi: "Cả hai lựa chọn đều tuyệt — đây là ngày tự do, không bắt buộc. Vui lòng chọn cho từng người để chúng tôi sắp xếp xe đưa đón phù hợp.", id: "Keduanya pilihan yang bagus — ini hari bebas, bukan kewajiban. Centang satu pilihan untuk setiap orang agar kami bisa menyiapkan bus yang sesuai." },
+  "rsvp.you": { en: "You", zh: "您", vi: "Bạn", id: "Anda" },
+  "rsvp.joinShuttle": { en: "Join shuttle", zh: "参加班车", vi: "Đi xe đưa đón", id: "Ikut Shuttle" },
+  "rsvp.stayAtResort": { en: "Stay at resort", zh: "留在度假村", vi: "Ở lại khu nghỉ dưỡng", id: "Tetap di Resor" },
+  "rsvp.notSure": { en: "Not sure", zh: "还不确定", vi: "Chưa chắc chắn", id: "Belum Yakin" },
+
+  "rsvp.dietaryLegend": { en: "Dietary restrictions (for you)", zh: "饮食限制（您本人）", vi: "Hạn chế ăn uống (của bạn)", id: "Pantangan Makanan (untuk Anda)" },
+  "rsvp.vegetarian": { en: "Vegetarian", zh: "素食", vi: "Ăn chay", id: "Vegetarian" },
+  "rsvp.vegan": { en: "Vegan", zh: "严格素食", vi: "Thuần chay", id: "Vegan" },
+  "rsvp.glutenSensitivity": { en: "Gluten sensitivity", zh: "麸质敏感", vi: "Nhạy cảm với gluten", id: "Sensitif Gluten" },
+  "rsvp.nutAllergy": { en: "Nut allergy", zh: "坚果过敏", vi: "Dị ứng đậu phộng/hạt", id: "Alergi Kacang" },
+  "rsvp.shellfishAllergy": { en: "Shellfish allergy", zh: "海鲜过敏", vi: "Dị ứng hải sản có vỏ", id: "Alergi Makanan Laut" },
+  "rsvp.anythingElseKnow": { en: "Anything else we should know?", zh: "还有其他需要告知我们的吗？", vi: "Có điều gì khác chúng tôi nên biết không?", id: "Ada hal lain yang perlu kami ketahui?" },
+  "rsvp.dietaryOtherPlaceholder": { en: "e.g. severe allergy details", zh: "例如：严重过敏详情", vi: "vd: chi tiết về dị ứng nặng", id: "cth: detail alergi berat" },
+
+  "rsvp.mobilityLabel": { en: "Mobility or accessibility needs", zh: "行动不便或无障碍需求", vi: "Nhu cầu về khả năng di chuyển hoặc tiếp cận", id: "Kebutuhan Mobilitas atau Aksesibilitas" },
+  "rsvp.mobilityPlaceholder": { en: "Let us know how we can make things easier for you — optional.", zh: "请告诉我们如何能让您更方便——选填。", vi: "Hãy cho chúng tôi biết cách giúp bạn thuận tiện hơn — không bắt buộc.", id: "Beri tahu kami bagaimana kami bisa membuat semuanya lebih mudah untuk Anda — opsional." },
+
+  "rsvp.nightsLegend": { en: "Which nights will you be at the resort?", zh: "您将在度假村入住哪几晚？", vi: "Bạn sẽ ở khu nghỉ dưỡng những đêm nào?", id: "Malam Mana Saja Anda Menginap di Resor?" },
+  "rsvp.june30": { en: "June 30", zh: "6月30日", vi: "30 tháng 6", id: "30 Juni" },
+  "rsvp.july1": { en: "July 1 (wedding day)", zh: "7月1日（婚礼当天）", vi: "1 tháng 7 (ngày cưới)", id: "1 Juli (hari pernikahan)" },
+  "rsvp.july2": { en: "July 2", zh: "7月2日", vi: "2 tháng 7", id: "2 Juli" },
+  "rsvp.july3": { en: "July 3", zh: "7月3日", vi: "3 tháng 7", id: "3 Juli" },
+
+  "rsvp.noteLabel": { en: "Anything else you'd like to tell us?", zh: "还有其他想告诉我们的吗？", vi: "Bạn có điều gì khác muốn chia sẻ với chúng tôi không?", id: "Ada hal lain yang ingin Anda sampaikan?" },
+  "rsvp.notePlaceholder": { en: "Optional note to us", zh: "给我们的留言（选填）", vi: "Lời nhắn (không bắt buộc)", id: "Catatan untuk kami (opsional)" },
+
+  "rsvp.submit": { en: "Submit RSVP", zh: "提交回复", vi: "Gửi Xác Nhận", id: "Kirim Konfirmasi" },
+  "rsvp.sending": { en: "Sending...", zh: "发送中……", vi: "Đang gửi...", id: "Mengirim..." },
+  "rsvp.sendingStatus": { en: "Sending your RSVP...", zh: "正在发送您的回复……", vi: "Đang gửi xác nhận của bạn...", id: "Mengirim konfirmasi Anda..." },
+  "rsvp.fixHighlighted": { en: "Please fix the highlighted fields.", zh: "请修正标记出的字段。", vi: "Vui lòng sửa các trường được đánh dấu.", id: "Mohon perbaiki kolom yang ditandai." },
+
+  "rsvp.err.firstName": { en: "First name is required.", zh: "请填写名字。", vi: "Vui lòng nhập tên.", id: "Nama depan wajib diisi." },
+  "rsvp.err.lastName": { en: "Last name is required.", zh: "请填写姓氏。", vi: "Vui lòng nhập họ.", id: "Nama belakang wajib diisi." },
+  "rsvp.err.email": { en: "Email is required.", zh: "请填写电子邮箱。", vi: "Vui lòng nhập email.", id: "Email wajib diisi." },
+  "rsvp.err.emailInvalid": { en: "Enter a valid email address.", zh: "请输入有效的电子邮箱地址。", vi: "Vui lòng nhập địa chỉ email hợp lệ.", id: "Masukkan alamat email yang valid." },
+  "rsvp.err.phone": { en: "Phone number is required.", zh: "请填写电话号码。", vi: "Vui lòng nhập số điện thoại.", id: "Nomor telepon wajib diisi." },
+  "rsvp.err.phoneInvalid": { en: "Enter a valid phone number.", zh: "请输入有效的电话号码。", vi: "Vui lòng nhập số điện thoại hợp lệ.", id: "Masukkan nomor telepon yang valid." },
+
+  "rsvp.successThanks": { en: "Thank you, {name}!", zh: "谢谢您，{name}！", vi: "Cảm ơn bạn, {name}!", id: "Terima kasih, {name}!" },
+  "rsvp.successThanksFallback": { en: "friend", zh: "朋友", vi: "bạn", id: "sahabat" },
+  "rsvp.successBody": { en: "Your RSVP is in. We can't wait to celebrate with you in Ho Tram.", zh: "您的回复已收到。我们迫不及待想在头顿与您共同庆祝！", vi: "Chúng tôi đã nhận được xác nhận của bạn. Rất mong được cùng bạn ăn mừng tại Hồ Tràm.", id: "Konfirmasi Anda telah kami terima. Kami tidak sabar merayakannya bersama Anda di Ho Tram." },
+  "rsvp.successSchedule": { en: "Check out the schedule →", zh: "查看日程安排 →", vi: "Xem lịch trình →", id: "Lihat jadwal →" },
+
+  "rsvp.err.banner": {
+    en: "We couldn't confirm your RSVP submitted — this can happen if the site is still on a placeholder endpoint, or your connection dropped. Please try again, or text {name} at {phone} with your details, message {whatsappLink}, or {emailLink} as a backup.",
+    zh: "我们无法确认您的回复是否已成功提交——这可能是网站尚未配置好，或网络连接中断所致。请重试，或将您的信息发短信给{name}（{phone}），也可留言{whatsappLink}，或{emailLink}作为备用方式。",
+    vi: "Chúng tôi không thể xác nhận việc gửi RSVP của bạn — điều này có thể do trang web vẫn đang dùng địa chỉ tạm thời, hoặc kết nối mạng bị gián đoạn. Vui lòng thử lại, hoặc nhắn tin thông tin của bạn cho {name} theo số {phone}, nhắn qua {whatsappLink}, hoặc {emailLink} như một phương án dự phòng.",
+    id: "Kami tidak dapat memastikan konfirmasi Anda terkirim — ini bisa terjadi jika situs masih memakai alamat sementara, atau koneksi Anda terputus. Silakan coba lagi, atau kirim pesan berisi detail Anda ke {name} di {phone}, kirim pesan lewat {whatsappLink}, atau {emailLink} sebagai cadangan.",
+  },
+  "rsvp.err.emailUsDirectly": { en: "email us your RSVP directly", zh: "直接通过邮件发送您的回复", vi: "gửi email RSVP trực tiếp cho chúng tôi", id: "kirim konfirmasi Anda langsung lewat email" },
+
+  /* -------------------------------- Travel -------------------------------- */
+  "travel.eyebrow": { en: "Travel & Accommodations", zh: "旅行与住宿", vi: "Du Lịch & Chỗ Ở", id: "Perjalanan & Akomodasi" },
+  "travel.heading": { en: "Flights, visas, and getting to the coast", zh: "航班、签证与前往海边的交通", vi: "Chuyến bay, visa và cách di chuyển ra biển", id: "Penerbangan, Visa, dan Cara ke Pantai" },
+  "travel.sub": { en: "Everything guests ask us, in one skimmable place. Search below, or jump straight to a section.", zh: "宾客常见问题，一站汇总，方便快速浏览。可在下方搜索，或直接跳转至相应板块。", vi: "Mọi câu hỏi khách thường hỏi, gói gọn ở một nơi dễ xem. Tìm kiếm bên dưới, hoặc chuyển thẳng đến một mục.", id: "Semua pertanyaan tamu, dikumpulkan di satu tempat yang mudah dibaca sekilas. Cari di bawah, atau langsung ke salah satu bagian." },
+  "travel.searchPlaceholder": { en: "Search questions — try “visa” or “Grab”…", zh: "搜索问题——例如输入“签证”或“Grab”……", vi: "Tìm câu hỏi — thử “visa” hoặc “Grab”…", id: "Cari pertanyaan — coba “visa” atau “Grab”…" },
+  "travel.searchAriaLabel": { en: "Search FAQs", zh: "搜索常见问题", vi: "Tìm kiếm câu hỏi thường gặp", id: "Cari pertanyaan umum" },
+
+  /* ------------------------------- Schedule ------------------------------- */
+  "schedule.heading": { en: "Four days, roughly in order", zh: "四天行程，大致顺序如下", vi: "Bốn ngày, theo trình tự", id: "Empat Hari, Kurang Lebih Berurutan" },
+  "schedule.sub": { en: "Arrive, get married (that's us), take a free day however you like, then head home. Times marked TODO are still being finalized.", zh: "抵达、见证我们的婚礼、自由安排一天活动，然后启程回家。标注为“待定”的时间仍在最终确认中。", vi: "Đến nơi, dự lễ cưới (của chúng tôi), có một ngày tự do tùy thích, rồi lên đường về nhà. Các mốc thời gian đánh dấu TODO vẫn đang được chốt.", id: "Tiba, hadir di pernikahan (kami), nikmati hari bebas sesuka hati, lalu pulang. Waktu yang ditandai TODO masih dalam proses dipastikan." },
+  "schedule.addToCalendar": { en: "Add to calendar (.ics)", zh: "添加到日历（.ics）", vi: "Thêm vào lịch (.ics)", id: "Tambahkan ke Kalender (.ics)" },
+  "schedule.day1": { en: "Day 1", zh: "第1天", vi: "Ngày 1", id: "Hari 1" },
+  "schedule.day2": { en: "Day 2", zh: "第2天", vi: "Ngày 2", id: "Hari 2" },
+  "schedule.day3": { en: "Day 3", zh: "第3天", vi: "Ngày 3", id: "Hari 3" },
+  "schedule.day4": { en: "Day 4", zh: "第4天", vi: "Ngày 4", id: "Hari 4" },
+  "schedule.decidingPrefix": { en: "Deciding between Vung Tau and the resort on Day 3? Tell us on the", zh: "还在犹豫第3天是去头顿还是留在度假村？请通过", vi: "Chưa quyết định giữa Vũng Tàu và ở lại khu nghỉ dưỡng vào Ngày 3? Hãy cho chúng tôi biết qua", id: "Masih bimbang antara Vung Tau atau tetap di resor pada Hari ke-3? Beri tahu kami lewat" },
+  "schedule.rsvpFormLink": { en: "RSVP form", zh: "回复表单告诉我们", vi: "biểu mẫu RSVP", id: "formulir konfirmasi" },
+  "schedule.decidingSuffix": { en: "— no pressure either way.", zh: "——两个选择都完全没有压力。", vi: "— chọn bên nào cũng không sao cả.", id: "— pilih mana saja tidak masalah." },
+
+  "schedule.arrivalPlanEyebrow": { en: "Suggested arrival plan", zh: "建议行程安排", vi: "Gợi ý kế hoạch đến sớm", id: "Saran Rencana Kedatangan" },
+  "schedule.arrivalPlanHeading": { en: "Come early, decompress twice", zh: "提前抵达，双重放松", vi: "Đến sớm, thư giãn hai lần", id: "Datang Lebih Awal, Bersantai Dua Kali" },
+  "schedule.arrivalPlanP1": {
+    en: "The flight is long, and jet lag doesn't care about your itinerary. We'd suggest flying into Ho Chi Minh City <strong>a few days to a week before June 30</strong> — explore the city while you're still running on adrenaline, then head to the resort already unwound.",
+    zh: "航程很长，时差也不会体谅您的行程安排。我们建议<strong>提前几天到一周（6月30日之前）</strong>飞抵胡志明市——趁着还处于亢奋状态先逛逛城市，等到达度假村时已经调整好状态。",
+    vi: "Chuyến bay khá dài, và lệch múi giờ thì chẳng quan tâm đến lịch trình của bạn. Chúng tôi gợi ý nên bay đến Thành phố Hồ Chí Minh <strong>trước ngày 30/6 vài ngày đến một tuần</strong> — khám phá thành phố khi vẫn còn hưng phấn, rồi đến khu nghỉ dưỡng khi đã thư thái.",
+    id: "Penerbangannya panjang, dan jet lag tidak peduli dengan jadwal Anda. Kami sarankan terbang ke Ho Chi Minh City <strong>beberapa hari hingga seminggu sebelum 30 Juni</strong> — jelajahi kota saat masih penuh semangat, lalu menuju resor dalam keadaan sudah rileks.",
+  },
+  "schedule.arrivalPlanP2": { en: "In Saigon, a few easy ways to spend the time:", zh: "在西贡，这几种消遣方式轻松又惬意：", vi: "Ở Sài Gòn, đây là vài cách đơn giản để tận hưởng thời gian:", id: "Di Saigon, beberapa cara mudah menghabiskan waktu:" },
+  "schedule.arrivalPlanLi1": { en: "Coffee culture — egg coffee, weasel coffee, or just a plastic stool and a strong cà phê sữa đá.", zh: "咖啡文化——蛋咖啡、猫屎咖啡，或者随便找个塑料矮凳，来一杯浓郁的越南冰咖啡（cà phê sữa đá）。", vi: "Văn hóa cà phê — cà phê trứng, cà phê chồn, hay đơn giản là chiếc ghế nhựa với ly cà phê sữa đá đậm đà.", id: "Budaya kopi — kopi telur, kopi luwak, atau sekadar duduk di kursi plastik dengan cà phê sữa đá yang pekat." },
+  "schedule.arrivalPlanLi2": { en: "Street food crawls — bánh mì, phở, and whatever smells the best on the block you're standing on.", zh: "街头美食巡礼——法棍三明治（bánh mì）、越南河粉（phở），还有街角闻起来最香的那一家。", vi: "Lang thang ăn vặt đường phố — bánh mì, phở, và bất cứ món nào thơm nhất ở con phố bạn đang đứng.", id: "Berkeliling mencicipi jajanan kaki lima — bánh mì, phở, dan apa pun yang aromanya paling menggoda di jalan tempat Anda berdiri." },
+  "schedule.arrivalPlanLi3": { en: "Motorbike-dodging as a spectator sport — find a café balcony over a busy intersection and watch the choreography.", zh: "把“躲摩托车”当成一项观赏运动——找个能俯瞰繁忙路口的咖啡馆阳台，欣赏这场“交通芭蕾”。", vi: "Xem né xe máy như một môn thể thao — tìm ban công quán cà phê nhìn ra ngã tư đông đúc và ngắm màn “vũ điệu” giao thông.", id: "Nonton orang menghindari motor sebagai tontonan tersendiri — cari kafe dengan balkon menghadap perempatan ramai dan saksikan koreografinya." },
+  "schedule.arrivalPlanP3": { en: "Then Ho Tram will feel like exactly the exhale it's supposed to be.", zh: "之后再到头顿，才会真正感受到那种彻底放松的感觉。", vi: "Sau đó, Hồ Tràm sẽ thực sự mang lại cảm giác thư giãn trọn vẹn như nó vốn nên là.", id: "Setelah itu, Ho Tram akan terasa seperti napas lega yang memang seharusnya begitu." },
+
+  /* --------------------------------- Guide --------------------------------- */
+  "guide.eyebrow": { en: "Local guide", zh: "当地指南", vi: "Cẩm nang địa phương", id: "Panduan Lokal" },
+  "guide.heading": { en: "How to do Vietnam like you've done it before", zh: "轻松玩转越南，仿佛您早已来过", vi: "Trải nghiệm Việt Nam như thể bạn đã từng đến đây", id: "Menjelajah Vietnam Seolah Anda Sudah Pernah ke Sini" },
+  "guide.sub": { en: "Money, safety, time zones, weather, and what to pack. Skim it once before you leave.", zh: "货币、安全、时区、天气与行李清单——出发前快速浏览一遍即可。", vi: "Tiền bạc, an toàn, múi giờ, thời tiết và những gì cần mang theo. Đọc lướt một lần trước khi lên đường.", id: "Uang, keamanan, zona waktu, cuaca, dan apa yang perlu dibawa. Baca sekilas sebelum berangkat." },
+  "guide.navInsider": { en: "Insider guide", zh: "内行指南", vi: "Cẩm nang trong cuộc", id: "Panduan Orang Dalam" },
+  "guide.navEat": { en: "What to eat", zh: "美食推荐", vi: "Ăn gì", id: "Apa yang Dimakan" },
+  "guide.navBring": { en: "What to bring", zh: "行李清单", vi: "Mang gì theo", id: "Apa yang Dibawa" },
+
+  "guide.insiderHeading": { en: "Insider guide", zh: "内行指南", vi: "Cẩm nang trong cuộc", id: "Panduan Orang Dalam" },
+  "guide.currencyTitle": { en: "Currency & payments", zh: "货币与支付", vi: "Tiền tệ & thanh toán", id: "Mata Uang & Pembayaran" },
+  "guide.currencyP1": { en: "Use VND wherever you can. Larger venues generally take credit cards, but small vendors are cash-first.", zh: "尽量使用越南盾（VND）。大型场所通常接受信用卡，但小商贩则以现金为主。", vi: "Hãy dùng VND bất cứ khi nào có thể. Các địa điểm lớn thường nhận thẻ tín dụng, nhưng người bán nhỏ lẻ chủ yếu dùng tiền mặt.", id: "Gunakan VND sebisa mungkin. Tempat besar umumnya menerima kartu kredit, tapi pedagang kecil lebih mengutamakan uang tunai." },
+  "guide.currencyP2": { en: "<strong>VPBank ATMs</strong> are the most reliable option for fee-free withdrawals.", zh: "<strong>VPBank的ATM</strong>是免手续费取款最可靠的选择。", vi: "<strong>Máy ATM của VPBank</strong> là lựa chọn đáng tin cậy nhất để rút tiền miễn phí.", id: "<strong>ATM VPBank</strong> adalah pilihan paling andal untuk penarikan tanpa biaya." },
+  "guide.currencyP3": { en: "When a card machine asks \"charge in USD or VND?\" — <strong>always choose VND.</strong> That USD option (Dynamic Currency Conversion) is a bad exchange rate with a fee attached, dressed up as a convenience.", zh: "当刷卡机询问“以美元还是越南盾结算？”时——<strong>请务必选择越南盾。</strong>选择美元结算（即动态货币转换，DCC）实际上是打着“方便”旗号的糟糕汇率加额外手续费。", vi: "Khi máy quẹt thẻ hỏi \"thanh toán bằng USD hay VND?\" — <strong>hãy luôn chọn VND.</strong> Lựa chọn USD (chuyển đổi tiền tệ động - DCC) thực chất là tỷ giá bất lợi kèm phí, được ngụy trang thành sự tiện lợi.", id: "Saat mesin kartu bertanya \"bayar dalam USD atau VND?\" — <strong>selalu pilih VND.</strong> Opsi USD (Dynamic Currency Conversion) sebenarnya kurs buruk plus biaya tambahan yang dikemas seolah memudahkan." },
+  "guide.tippingTitle": { en: "Tipping", zh: "小费", vi: "Tiền tip", id: "Tip" },
+  "guide.tippingP1": { en: "Not expected, anywhere. Truly — no mental math required, no guilt if you don't.", zh: "在任何地方都无需给小费。真的——不用心算，不给也完全没有心理负担。", vi: "Không ai mong đợi tiền tip ở bất cứ đâu. Thật đấy — khỏi phải nhẩm tính, không cho cũng chẳng sao.", id: "Tidak diharapkan di mana pun. Sungguh — tidak perlu hitung-hitungan, tidak akan merasa bersalah jika tidak memberi." },
+  "guide.safetyTitle": { en: "Airport & ride safety", zh: "机场与乘车安全", vi: "An toàn ở sân bay & khi di chuyển", id: "Keamanan Bandara & Perjalanan" },
+  "guide.safetyP1": { en: "Don't accept rides from people who approach you in arrivals. Use Grab, or the official taxi queue.", zh: "不要接受在到达大厅主动搭讪招揽您乘车的人。请使用Grab，或前往官方出租车排队处。", vi: "Đừng nhận lời mời đi xe từ người tiếp cận bạn ở khu vực đến. Hãy dùng Grab, hoặc xếp hàng ở khu taxi chính thức.", id: "Jangan menerima tawaran tumpangan dari orang yang mendekati Anda di area kedatangan. Gunakan Grab, atau antrean taksi resmi." },
+  "guide.safetyP2": { en: "See the {link} for the full rundown on getting around.", zh: "完整的市内交通攻略请见{link}。", vi: "Xem {link} để biết đầy đủ thông tin về cách di chuyển.", id: "Lihat {link} untuk penjelasan lengkap seputar transportasi." },
+  "guide.travelPageLink": { en: "Travel page", zh: "旅行页面", vi: "trang Du lịch", id: "halaman Perjalanan" },
+  "guide.weatherTitle": { en: "Weather", zh: "天气", vi: "Thời tiết", id: "Cuaca" },
+  "guide.weatherP1": { en: "Late June/early July is hot, humid, and can rain without much warning. Expect it, don't fight it.", zh: "六月末至七月初气候炎热潮湿，且可能毫无预兆地突然下雨。请做好心理准备，坦然接受。", vi: "Cuối tháng 6/đầu tháng 7 trời nóng, ẩm, và có thể mưa bất chợt. Hãy chuẩn bị tinh thần, đừng cố chống lại.", id: "Akhir Juni/awal Juli cuacanya panas, lembap, dan bisa hujan tiba-tiba. Antisipasi saja, jangan dilawan." },
+
+  "guide.timezoneEyebrow": { en: "Time zone", zh: "时区", vi: "Múi giờ", id: "Zona Waktu" },
+  "guide.timezoneHeading": { en: "Saigon vs. your local time", zh: "西贡时间对比您的当地时间", vi: "Sài Gòn so với giờ địa phương của bạn", id: "Saigon vs. Waktu Lokal Anda" },
+  "guide.timezoneP": {
+    en: "Vietnam runs on <strong>UTC+7</strong> — that's 11 hours ahead of US Eastern and 14 hours ahead of US Pacific in July (US daylight saving is in effect then, Vietnam doesn't observe DST). Here's a live comparison:",
+    zh: "越南时间为<strong>UTC+7</strong>——7月份比美国东部时间快11小时，比美国太平洋时间快14小时（当时美国正处于夏令时，越南不实行夏令时）。以下为实时对比：",
+    vi: "Việt Nam theo múi giờ <strong>UTC+7</strong> — vào tháng 7, nhanh hơn giờ miền Đông Mỹ 11 tiếng và giờ miền Tây Mỹ 14 tiếng (lúc đó Mỹ đang áp dụng giờ mùa hè, còn Việt Nam thì không). Đây là so sánh theo thời gian thực:",
+    id: "Vietnam menggunakan <strong>UTC+7</strong> — pada bulan Juli, itu 11 jam lebih cepat dari waktu Timur AS dan 14 jam lebih cepat dari waktu Pasifik AS (saat itu AS sedang menerapkan waktu musim panas, sementara Vietnam tidak). Berikut perbandingan waktu langsung:",
+  },
+  "guide.timeCardSaigon": { en: "Ho Tram / Saigon", zh: "头顿 / 西贡", vi: "Hồ Tràm / Sài Gòn", id: "Ho Tram / Saigon" },
+  "guide.timeCardYourTime": { en: "Your time", zh: "您的当地时间", vi: "Giờ của bạn", id: "Waktu Anda" },
+
+  "guide.eatHeading": { en: "What to eat", zh: "美食推荐", vi: "Ăn gì", id: "Apa yang Dimakan" },
+  "guide.eatSub": { en: "Short answer: almost anything. This is one of the best reasons to be early to this wedding.", zh: "简单来说：几乎什么都能吃。这也是提前抵达参加婚礼的最大理由之一。", vi: "Câu trả lời ngắn gọn: gần như món gì cũng được. Đây là một trong những lý do tuyệt vời nhất để đến sớm dự đám cưới này.", id: "Jawaban singkatnya: hampir semuanya enak. Ini salah satu alasan terbaik untuk datang lebih awal ke pernikahan ini." },
+  "guide.eatCard1Title": { en: "Street food essentials", zh: "街头美食必吃", vi: "Món ăn đường phố không thể bỏ qua", id: "Jajanan Kaki Lima Wajib Coba" },
+  "guide.eatCard1Desc": { en: "Bánh mì, phở, bún thịt nướng — from a stall, not just a sit-down restaurant. Some of the best meals in the city cost less than a coffee back home.", zh: "法棍三明治（bánh mì）、越南河粉（phở）、烤肉米线（bún thịt nướng）——从路边摊吃起，而不只是餐厅。这座城市里许多最棒的美食，价格甚至比家乡一杯咖啡还便宜。", vi: "Bánh mì, phở, bún thịt nướng — hãy ăn ở quán vỉa hè, không chỉ nhà hàng. Một số món ngon nhất thành phố còn rẻ hơn một ly cà phê ở quê nhà.", id: "Bánh mì, phở, bún thịt nướng — dari gerobak pinggir jalan, bukan cuma restoran. Beberapa makanan terenak di kota ini harganya lebih murah dari secangkir kopi di negara asal Anda." },
+  "guide.eatCard2Title": { en: "Vietnamese coffee", zh: "越南咖啡", vi: "Cà phê Việt Nam", id: "Kopi Vietnam" },
+  "guide.eatCard2Desc": { en: "Cà phê sữa đá (iced, with condensed milk) is the everyday order. Egg coffee if you're feeling adventurous. Either way, get it from a plastic stool, not a chain.", zh: "越南冰咖啡（cà phê sữa đá，加炼乳）是日常首选。想尝鲜的话可以试试蛋咖啡。无论哪种，都建议在路边塑料矮凳小店买，而非连锁咖啡店。", vi: "Cà phê sữa đá là lựa chọn thường ngày. Cà phê trứng nếu bạn muốn thử điều mới. Dù chọn món nào, hãy mua ở quán vỉa hè ghế nhựa, không phải chuỗi cửa hàng.", id: "Cà phê sữa đá (es kopi susu kental manis) adalah pesanan sehari-hari. Kopi telur kalau Anda ingin coba yang unik. Apa pun pilihannya, belilah dari warung kaki lima, bukan gerai waralaba." },
+  "guide.eatCard3Title": { en: "Curated picks in Saigon", zh: "西贡精选推荐", vi: "Gợi ý chọn lọc tại Sài Gòn", id: "Pilihan Kurasi di Saigon" },
+  "guide.eatCard3Desc": { en: "Want a sure thing? The {link} has both Michelin-rated and Michelin-recommended spots across every budget.", zh: "想要稳妥之选？{link}收录了各种预算的米其林评级及米其林推荐餐厅。", vi: "Muốn một lựa chọn chắc chắn? {link} có cả những địa điểm được Michelin xếp hạng và đề xuất, phù hợp với mọi ngân sách.", id: "Ingin pilihan yang pasti enak? {link} punya tempat berperingkat Michelin maupun yang direkomendasikan Michelin untuk semua budget." },
+  "guide.michelinLink": { en: "Michelin Guide's Ho Chi Minh City list", zh: "米其林指南胡志明市榜单", vi: "danh sách Michelin Guide tại Thành phố Hồ Chí Minh", id: "daftar Michelin Guide Kota Ho Chi Minh" },
+  "guide.eatCard4Title": { en: "Seafood in Ho Tram", zh: "头顿海鲜", vi: "Hải sản ở Hồ Tràm", id: "Makanan Laut di Ho Tram" },
+  "guide.eatCard4Desc": { en: "Being on the coast means fresh seafood is easy to find near the resort. TODO: add a few specific restaurant picks once we've scoped out favorites.", zh: "身处海岸地区，度假村附近很容易找到新鲜海鲜。待补充：等我们确定几家心仪餐厅后再补充具体推荐。", vi: "Nằm ngay ven biển nên hải sản tươi rất dễ tìm gần khu nghỉ dưỡng. TODO: sẽ bổ sung vài gợi ý nhà hàng cụ thể sau khi chúng tôi khảo sát được vài chỗ ưng ý.", id: "Berada di pesisir membuat makanan laut segar mudah ditemukan dekat resor. TODO: akan tambahkan beberapa rekomendasi restoran spesifik setelah kami menemukan favorit." },
+
+  "guide.bringHeading": { en: "What to bring", zh: "行李清单", vi: "Mang gì theo", id: "Apa yang Dibawa" },
+  "guide.bringSub": { en: "Items with a “We've got you covered” badge — we'll have spares. Forgetting one isn't a crisis.", zh: "带有“我们已为您备好”标签的物品——我们会准备备用品。忘带了也完全不必担心。", vi: "Các món có nhãn “Chúng tôi lo rồi” — chúng tôi sẽ chuẩn bị sẵn thêm. Quên mang theo cũng không sao cả.", id: "Barang dengan lencana “Kami Sudah Siapkan” — kami akan menyediakan cadangannya. Lupa membawa bukan masalah besar." },
+  "guide.spareBadge": { en: "We've got you covered", zh: "我们已为您备好", vi: "Chúng tôi lo rồi", id: "Kami Sudah Siapkan" },
+};
+
+/* =============================================================================
+   Shuttle schedule table + rules, per language (mirrors renderShuttleScheduleHtml
+   in content.js, which stays the English/default version).
+   ========================================================================== */
+var SHUTTLE_TABLE_STRINGS = {
+  en: {
+    days: "Days", toHoTram: "HCMC → Ho Tram", toHcmc: "Ho Tram → HCMC",
+    monThu: "Mon–Thu", fri: "Friday", sat: "Saturday", sun: "Sunday",
+    stationPrefix: "Bus station:", rulesIntro: "A few rules:",
+    regulations: SHUTTLE_SCHEDULE.regulations,
+  },
+  zh: {
+    days: "日期", toHoTram: "胡志明市 → 头顿", toHcmc: "头顿 → 胡志明市",
+    monThu: "周一至周四", fri: "周五", sat: "周六", sun: "周日",
+    stationPrefix: "巴士站：", rulesIntro: "几点须知：",
+    regulations: [
+      "仅供入住度假村的宾客使用。",
+      "先到先得，视座位情况而定。",
+      "需提前通过度假村预订部或礼宾部预约座位。",
+      "请在发车前20分钟抵达巴士站——Hai Ha Building。",
+      "车上须全程佩戴口罩。",
+      "除紧急情况或合理请求外，巴士中途不停靠。",
+      "车上禁止饮食。",
+      "禁止吸烟；如有安全带请系好。",
+      "巴士将严格按时刻表准时发车——请勿迟到。",
+      "请妥善保管随身物品——如有遗失或损坏，度假村概不负责。",
+    ],
+  },
+  vi: {
+    days: "Ngày", toHoTram: "TP.HCM → Hồ Tràm", toHcmc: "Hồ Tràm → TP.HCM",
+    monThu: "Thứ 2–Thứ 5", fri: "Thứ 6", sat: "Thứ 7", sun: "Chủ nhật",
+    stationPrefix: "Trạm xe:", rulesIntro: "Một vài quy định:",
+    regulations: [
+      "Chỉ dành cho khách lưu trú tại khu nghỉ dưỡng.",
+      "Phục vụ theo thứ tự đăng ký trước, tùy số chỗ còn trống.",
+      "Cần đặt chỗ trước với bộ phận Đặt phòng hoặc Lễ tân của khu nghỉ dưỡng.",
+      "Vui lòng có mặt tại trạm xe — Tòa nhà Hai Ha — trước giờ khởi hành 20 phút.",
+      "Bắt buộc đeo khẩu trang trên xe.",
+      "Xe không dừng dọc đường trừ trường hợp khẩn cấp hoặc yêu cầu hợp lý.",
+      "Không ăn uống trên xe.",
+      "Không hút thuốc; vui lòng thắt dây an toàn nếu có.",
+      "Xe khởi hành đúng giờ theo lịch trình — đừng đến trễ.",
+      "Hãy tự bảo quản đồ đạc cá nhân — khu nghỉ dưỡng không chịu trách nhiệm nếu thất lạc hoặc hư hỏng trên xe.",
+    ],
+  },
+  id: {
+    days: "Hari", toHoTram: "HCMC → Ho Tram", toHcmc: "Ho Tram → HCMC",
+    monThu: "Sen–Kam", fri: "Jumat", sat: "Sabtu", sun: "Minggu",
+    stationPrefix: "Stasiun bus:", rulesIntro: "Beberapa aturan:",
+    regulations: [
+      "Hanya tersedia untuk tamu yang menginap di resor.",
+      "Siapa cepat dia dapat, tergantung ketersediaan kursi.",
+      "Pemesanan kursi harus dilakukan sebelumnya melalui tim Reservasi atau Concierge resor.",
+      "Mohon berada di stasiun bus — Gedung Hai Ha — 20 menit sebelum keberangkatan.",
+      "Wajib memakai masker selama di dalam bus.",
+      "Bus tidak berhenti di tengah jalan kecuali keadaan darurat atau permintaan yang wajar.",
+      "Dilarang makan dan minum di dalam bus.",
+      "Dilarang merokok; kenakan sabuk pengaman jika tersedia.",
+      "Bus berangkat tepat waktu sesuai jadwal — jangan sampai terlambat.",
+      "Jaga barang bawaan Anda — resor tidak bertanggung jawab atas kehilangan atau kerusakan di dalam bus.",
+    ],
+  },
+};
+
+function renderShuttleScheduleHtmlForLang(lang) {
+  var s = SHUTTLE_SCHEDULE;
+  var t = SHUTTLE_TABLE_STRINGS[lang] || SHUTTLE_TABLE_STRINGS.en;
+  var rows = [
+    [t.monThu, s.toHoTram["mon-thu"], s.toHCMC["mon-thu"]],
+    [t.fri, s.toHoTram.fri, s.toHCMC.fri],
+    [t.sat, s.toHoTram.sat, s.toHCMC.sat],
+    [t.sun, s.toHoTram.sun, s.toHCMC.sun],
+  ];
+  var rowsHtml = rows
+    .map(function (r) {
+      return "<tr><th scope=\"row\">" + r[0] + "</th><td>" + r[1].join(", ") + "</td><td>" + r[2].join(", ") + "</td></tr>";
+    })
+    .join("");
+  var regsHtml = t.regulations.map(function (r) { return "<li>" + r + "</li>"; }).join("");
+
+  return (
+    "<div class=\"table-scroll\"><table class=\"shuttle-table\">" +
+    "<caption class=\"visually-hidden\">Shuttle bus schedule between Ho Chi Minh City and Ho Tram</caption>" +
+    "<thead><tr><th scope=\"col\">" + t.days + "</th><th scope=\"col\">" + t.toHoTram + "</th><th scope=\"col\">" + t.toHcmc + "</th></tr></thead>" +
+    "<tbody>" + rowsHtml + "</tbody></table></div>" +
+    "<p style=\"margin-top: 1rem;\">" + t.stationPrefix + " <strong>" + s.station + "</strong>. " + t.rulesIntro + "</p>" +
+    "<ul>" + regsHtml + "</ul>"
+  );
+}
+
+/* =============================================================================
+   CONTENT_TRANSLATIONS — overrides for content.js data, keyed by the same
+   `id` fields already on those objects. English (content.js itself) is the
+   fallback whenever a key is missing here.
+   ========================================================================== */
+var CONTENT_TRANSLATIONS = {
+  zh: {
+    faqCategories: {
+      flights: "航班", visas: "签证", arriving: "抵达西贡机场", phones: "电话与网络",
+      "getting-around": "市内交通", "where-to-stay": "住宿推荐", "what-to-eat": "美食推荐",
+    },
+    faqs: {
+      "faq-direct-flights": {
+        question: "如何前往西贡？",
+        answer: "<p>越南航空（Vietnam Airlines）从美国多个门户城市直飞西贡（SGN）。如果直飞班次不符合您的时间或预算，也可经由东京、首尔或台北等枢纽转机——正好可以借此机会分段旅行，缓解长途飞行的疲惫。</p>",
+      },
+      "faq-when-to-book": {
+        question: "应该何时预订机票？",
+        answer: "<p>六月末至七月初正值旅游旺季，请勿拖延预订。<strong>提前3–6个月</strong>是预订机票的最佳时机——更早一些则可先设置票价提醒，了解“正常”价格区间，以免临近出发时价格上涨。</p><p>飞行时间较长，时差反应也不容小觑。这也是建议提前几天抵达的另一个理由（详见<a href=\"schedule.html#arrival-plan\">建议行程安排</a>）。</p>",
+      },
+      "faq-do-i-need-a-visa": {
+        question: "我需要签证吗？",
+        answer: "<p>这取决于您的护照——请务必提前确认，切勿想当然。多数旅客可在线申请电子签证。</p><p>电子签证申请请通过越南政府官方网站办理：<a href=\"https://evisa.gov.vn/\" target=\"_blank\" rel=\"noopener\">evisa.gov.vn</a>。电子签证处理时间<strong>至少需要2周</strong>。不过越南的办事节奏有其自身规律，建议不要在出发前不到<strong>一个月</strong>才申请。</p><p><strong>请注意：</strong>网络上存在一些山寨第三方签证网站，会为同样的服务额外收费。如有疑问，请务必使用上方官方链接evisa.gov.vn。</p>",
+      },
+      "faq-customs": {
+        question: "西贡机场的海关与入境流程是怎样的？",
+        answer: "<p>入境排队时间可能较长，尤其是多个国际航班同时抵达时。请务必保持耐心，随身携带（或电子存档）护照及签证批件（如需要），并预留充足时间，再安排后续行程。</p>",
+      },
+      "faq-phones-data": {
+        question: "我的手机在越南能用吗？",
+        answer: "<p>部分美国运营商——包括T-Mobile在内——的某些套餐包含免费国际数据与短信服务。请务必提前确认您所用的具体套餐是否涵盖此项服务，并非所有T-Mobile套餐都包含。</p><p>如果您的运营商不支持，购买当地eSIM是一个简单又实惠的替代方案，可在抵达前提前设置好。</p>",
+      },
+      "faq-grab": {
+        question: "抵达后如何在当地出行？",
+        answer: "<p>请在抵达前下载<strong>Grab</strong>（越南版的Uber）。无论是在市内还是前往婚礼场地，都会用得上。</p><p>注册或使用Grab并不需要越南本地电话号码——您平时使用的号码即可。但需要有网络数据，因此请确保在落地前手机套餐或eSIM已生效（详见上方“电话与网络”部分）。</p><p>可用越南盾现金支付，也可在App内绑定信用卡——两种方式都可行。</p><p><strong>请勿搭乘在机场到达区主动搭讪招揽您的“黑车”。</strong>请直接忽略他们，务必通过App在指定上车点预约用车。</p><p>另外提醒一点：越南没有给小费的习惯，无需给Grab司机小费。</p>",
+      },
+      "faq-getting-to-ho-tram": {
+        question: "如何从西贡前往头顿？",
+        answer:
+          "<p>头顿距离西贡市中心约<strong>2.5–3小时</strong>车程。</p><p>度假村提供往返胡志明市的定期班车——具体时刻表根据星期几而有所不同：</p>" +
+          renderShuttleScheduleHtmlForLang("zh") +
+          "<p style=\"margin-top: 1rem;\">此外，Grab也是前往头顿的可靠选择。</p>",
+      },
+      "faq-where-to-stay": {
+        question: "我们应该住在哪里？",
+        answer:
+          "<h4>头顿本地</h4><p>我们已在<strong id=\"faq-hotel-name\">TODO: Resort Name</strong>预留了房间区块。标准客房、套房及别墅均可供选择，具体视您的团队人数与预算而定。</p><ul><li><strong>预订链接：</strong> <a id=\"faq-hotel-link\" href=\"https://example.com/TODO-booking-link\" target=\"_blank\" rel=\"noopener\">TODO: paste booking link</a></li><li><strong>房间区块代码：</strong> <span id=\"faq-hotel-code\">TODO-ROOM-BLOCK-CODE</span></li><li><strong>咨询：</strong> <span id=\"faq-hotel-contact\">TODO@example.com</span></li></ul>" +
+          "<h4 style=\"margin-top: 1.5rem;\">胡志明市市区</h4><p>如果您计划提前抵达，先游览西贡市区（详见<a href=\"schedule.html#arrival-plan\">建议行程安排</a>），以下几个区域值得考虑入住：</p><ul>" +
+          "<li><strong>第一郡（District 1）</strong> ——最热闹的市中心区域，步行可达各大景点、餐厅与夜生活场所。若想住在最繁华的地段，选这里就对了。</li>" +
+          "<li><strong>第四郡（District 4）</strong> ——紧邻第一郡，但更为安静，交通也不那么拥堵。如果既想靠近市中心，又想避开第一郡的喧嚣，这是不错的选择。</li>" +
+          "<li><strong>平盛郡（Bình Thạnh）</strong> ——同样是很好的选择，更贴近本地生活气息，出行也很方便。</li>" +
+          "</ul><p>关于附近的美食推荐，请见下方<a href=\"#what-to-eat\">美食推荐</a>板块。</p>",
+      },
+      "faq-what-to-eat": {
+        question: "在当地应该吃些什么？",
+        answer:
+          "<p>简单来说：几乎什么都值得一试。越南美食本身就是提前抵达这场婚礼的绝佳理由之一。</p>" +
+          "<h4>在西贡</h4><p>不妨从基本款开始——<strong>法棍三明治（bánh mì）</strong>、<strong>越南河粉（phở）</strong>和<strong>烤肉米线（bún thịt nướng）</strong>——建议在路边摊尝试，而不仅限于正式餐厅。这座城市里最美味的一些餐点，价格甚至比家乡一杯咖啡还便宜。摊位前排长队通常是美味的信号，而非需要避开的警示。</p>" +
+          "<p>想要更有把握的选择？<a href=\"https://guide.michelin.com/us/en/restaurants?q=Ho+Chi+Minh+City+vietnam&amp;seeAll=true\" target=\"_blank\" rel=\"noopener\">米其林指南胡志明市榜单</a>收录了各种预算的米其林评级及米其林推荐餐厅——既有平价美食，也不乏精致品鉴菜单。</p>" +
+          "<h4 style=\"margin-top: 1.5rem;\">在头顿</h4><p>身处海岸地区，度假村附近很容易找到新鲜海鲜。待补充：等我们确定几家心仪餐厅后再补充具体推荐。</p>",
+      },
+    },
+    itinerary: {
+      1: {
+        label: "第1天", vibe: "抵达、放松、享用美食。",
+        events: {
+          arrivals: { title: "抵达西贡机场（SGN）", description: "无论您的航班何时抵达都没关系——并没有统一的集合抵达时间。乘坐Grab是前往酒店或直达头顿最便捷的方式。", time: "全天" },
+          "shuttle-arrival": { title: "前往头顿的班车", description: "待确认具体时间。我们将安排几个从胡志明市出发的班车时段，方便不想单独打车的宾客结伴同行。", timeTemplate: "度假村从胡志明市出发的班车时间为{times}，即您的抵达当天。请提前通过度假村预订部/礼宾部预约座位——完整周班车时刻表详见旅行页面。若未能预约，Grab也同样方便。" },
+          dinner: { title: "欢迎晚宴", description: "轻松随性的度假村晚宴，长途飞行后无需盛装出席，穿着舒适即可前来。具体时间待通知——目前所示为暂定时间。", time: "TODO：晚上7点（暂定）" },
+        },
+      },
+      2: {
+        label: "第2天", vibe: "婚礼当天。",
+        events: {
+          ceremony: { title: "婚礼仪式", description: "具体流程仍在最终确定中。待确认仪式开始时间及场地内具体地点。", time: "TODO：仪式时间待定" },
+          cocktail: { title: "鸡尾酒会", description: "具体时间待确认。届时将提供饮品与小食，供大家稍作休憩。", time: "TODO：鸡尾酒会时间待定" },
+          reception: { title: "婚宴", description: "晚餐、祝酒致辞与舞会。待确认婚宴开始与结束时间。", time: "TODO：婚宴时间待定" },
+        },
+      },
+      3: {
+        label: "第3天", vibe: "自由活动日——可选择前往头顿或留在度假村。",
+        events: {
+          "shuttle-vungtau": { title: "前往头顿的班车（可选）", description: "适合想体验一日游的宾客——海岸风光、新鲜海鲜、换个环境放松身心。出发与返回时间待确认。", time: "TODO：待确认具体时间" },
+          relax: { title: "或：留在度假村休息", description: "同样是绝佳选择。游泳池、沙滩、水疗，或者好好补一觉、调整时差。请在回复表单中告知我们您的意向。", time: "全天" },
+        },
+      },
+      4: {
+        label: "第4天", vibe: "退房、道别、启程返程。",
+        events: {
+          checkout: { title: "退房", description: "待确认标准退房时间，以及此预订区块是否可申请延迟退房。", time: "TODO：退房时间待定" },
+          departures: { title: "启程返程", description: "待确认航班较晚出发的宾客可用的行李寄存方案。大多数宾客将在7月4日假期周末期间飞回家。", timeTemplate: "度假村返回胡志明市的班车时间为{times}。待确认航班较晚出发的宾客可用的行李寄存方案。大多数宾客将在7月4日假期周末期间飞回家。" },
+        },
+      },
+    },
+    packingList: {
+      mosquito: { label: "驱蚊用品", note: "如有惯用品牌请自带——我们也会准备备用品。" },
+      swimwear: { label: "短裤与泳衣", note: "天气炎热，您每天都会用得上。" },
+      umbrella: { label: "雨伞", note: "可能会下雨。度假村也备有雨伞可供借用。" },
+      sandals: { label: "凉鞋", note: "轻便透气，不惧沙滩。度假村也备有可借用的凉鞋。" },
+      hat: { label: "帽子", note: "真正会戴得住的防晒帽。" },
+      attire: { label: "海滩婚礼着装", note: "轻薄面料，避免厚重衣物。炎热与潮湿在所难免。" },
+      sunscreen: { label: "防晒霜", note: "如有护礁型防晒霜更佳。阳光可不会通融。" },
+      golf: { label: "高尔夫装备（可选）", note: "附近设有球场，可租用球杆；请留意着装要求。", linkLabel: "The Bluffs Ho Tram Strip" },
+    },
+  },
+
+  vi: {
+    faqCategories: {
+      flights: "Chuyến bay", visas: "Visa", arriving: "Đến sân bay SGN", phones: "Điện thoại & Mạng",
+      "getting-around": "Di chuyển", "where-to-stay": "Chỗ ở", "what-to-eat": "Ăn gì",
+    },
+    faqs: {
+      "faq-direct-flights": {
+        question: "Chúng tôi đến Sài Gòn bằng cách nào?",
+        answer: "<p>Vietnam Airlines có chuyến bay thẳng đến Sài Gòn (SGN) từ nhiều thành phố cửa ngõ ở Mỹ. Nếu chuyến bay thẳng không phù hợp lịch trình hoặc ngân sách, vẫn có nhiều lựa chọn quá cảnh qua Tokyo, Seoul hoặc Đài Bắc — một cái cớ hay để chia nhỏ chặng bay dài.</p>",
+      },
+      "faq-when-to-book": {
+        question: "Khi nào nên đặt vé máy bay?",
+        answer: "<p>Cuối tháng 6/đầu tháng 7 là mùa cao điểm, đừng chần chừ. <strong>Trước 3–6 tháng</strong> là thời điểm lý tưởng để săn vé — hãy đặt cảnh báo giá sớm hơn để biết mức giá \"bình thường\" trước khi giá tăng.</p><p>Chuyến bay khá dài và tình trạng lệch múi giờ là có thật. Đó là một lý do nữa để đến sớm vài ngày (xem <a href=\"schedule.html#arrival-plan\">gợi ý kế hoạch đến sớm</a>).</p>",
+      },
+      "faq-do-i-need-a-visa": {
+        question: "Tôi có cần visa không?",
+        answer: "<p>Tùy vào hộ chiếu của bạn — hãy kiểm tra trước, đừng mặc định. Nhiều du khách có thể xin e-visa trực tuyến.</p><p>Đơn xin e-visa được nộp qua cổng thông tin chính thức của chính phủ: <a href=\"https://evisa.gov.vn/\" target=\"_blank\" rel=\"noopener\">evisa.gov.vn</a>. E-visa cần <strong>ít nhất 2 tuần</strong> để xử lý. Nhưng mọi thứ ở Việt Nam vận hành theo nhịp riêng, nên đừng đợi đến sát ngày đi mới nộp — hãy nộp trước chuyến đi <strong>ít nhất một tháng</strong>.</p><p><strong>Lưu ý:</strong> có những trang web visa bên thứ ba giả mạo, tính thêm phí cho cùng một dịch vụ. Nếu không chắc chắn, hãy dùng đúng liên kết chính thức evisa.gov.vn ở trên.</p>",
+      },
+      "faq-customs": {
+        question: "Thủ tục hải quan và nhập cảnh ở SGN như thế nào?",
+        answer: "<p>Hàng chờ nhập cảnh có thể khá dài, đặc biệt khi nhiều chuyến bay quốc tế hạ cánh cùng lúc. Hãy kiên nhẫn, chuẩn bị sẵn hộ chiếu và (nếu cần) visa đã được duyệt (bản in hoặc lưu trên điện thoại), và dành thêm thời gian trước khi lên kế hoạch di chuyển tiếp theo.</p>",
+      },
+      "faq-phones-data": {
+        question: "Điện thoại của tôi có dùng được ở Việt Nam không?",
+        answer: "<p>Một số nhà mạng Mỹ — trong đó có T-Mobile — có gói cước bao gồm dữ liệu và nhắn tin quốc tế miễn phí. Hãy kiểm tra kỹ gói cước của bạn trước khi mặc định là có; không phải gói T-Mobile nào cũng bao gồm dịch vụ này.</p><p>Nếu nhà mạng của bạn không hỗ trợ, eSIM địa phương là lựa chọn thay thế dễ dàng và rẻ, có thể thiết lập trước khi hạ cánh.</p>",
+      },
+      "faq-grab": {
+        question: "Sau khi hạ cánh, chúng tôi di chuyển bằng cách nào?",
+        answer: "<p>Hãy tải <strong>Grab</strong> (ứng dụng kiểu Uber của Việt Nam) trước khi đến. Bạn sẽ dùng nó trong thành phố và để đến địa điểm tổ chức tiệc cưới.</p><p>Bạn không cần số điện thoại Việt Nam để đăng ký hay sử dụng — số điện thoại thường ngày của bạn vẫn dùng được. Tuy nhiên bạn cần có dữ liệu mạng, vì vậy hãy đảm bảo gói cước hoặc eSIM đã kích hoạt trước khi hạ cánh (xem phần Điện thoại & Mạng ở trên).</p><p>Thanh toán bằng tiền mặt VND hoặc liên kết thẻ tín dụng trong ứng dụng — cả hai cách đều được.</p><p><strong>Đừng nhận lời mời đi xe từ những người tiếp cận bạn ở khu vực đến của sân bay.</strong> Hãy phớt lờ họ và đặt xe qua ứng dụng tại điểm đón chỉ định.</p><p>Thêm một điều nữa: Việt Nam không có văn hóa tip. Không cần tip tài xế Grab.</p>",
+      },
+      "faq-getting-to-ho-tram": {
+        question: "Chúng tôi di chuyển từ Sài Gòn đến Hồ Tràm như thế nào?",
+        answer:
+          "<p>Hồ Tràm cách trung tâm Sài Gòn khoảng <strong>2,5–3 giờ</strong> đi đường bộ.</p><p>Khu nghỉ dưỡng có xe đưa đón thường xuyên đến/từ Thành phố Hồ Chí Minh — lịch chạy tùy theo ngày trong tuần:</p>" +
+          renderShuttleScheduleHtmlForLang("vi") +
+          "<p style=\"margin-top: 1rem;\">Ngoài ra, Grab cũng là lựa chọn đáng tin cậy cho chặng đường này.</p>",
+      },
+      "faq-where-to-stay": {
+        question: "Chúng tôi nên ở đâu?",
+        answer:
+          "<h4>Tại Hồ Tràm</h4><p>Chúng tôi đã đặt sẵn một khối phòng tại <strong id=\"faq-hotel-name\">TODO: Resort Name</strong>. Có phòng tiêu chuẩn, suite và villa tùy theo số lượng người và ngân sách của bạn.</p><ul><li><strong>Liên kết đặt phòng:</strong> <a id=\"faq-hotel-link\" href=\"https://example.com/TODO-booking-link\" target=\"_blank\" rel=\"noopener\">TODO: paste booking link</a></li><li><strong>Mã khối phòng:</strong> <span id=\"faq-hotel-code\">TODO-ROOM-BLOCK-CODE</span></li><li><strong>Thắc mắc:</strong> <span id=\"faq-hotel-contact\">TODO@example.com</span></li></ul>" +
+          "<h4 style=\"margin-top: 1.5rem;\">Trung tâm Thành phố Hồ Chí Minh</h4><p>Nếu bạn đến sớm để khám phá Sài Gòn trước (xem <a href=\"schedule.html#arrival-plan\">gợi ý kế hoạch đến sớm</a>), đây là vài khu vực đáng cân nhắc để đặt phòng:</p><ul>" +
+          "<li><strong>Quận 1</strong> — trung tâm sôi động của thành phố. Dễ đi bộ, tập trung nhiều điểm tham quan, nhà hàng và cuộc sống về đêm. Chọn nơi này nếu bạn muốn ở ngay giữa mọi hoạt động.</li>" +
+          "<li><strong>Quận 4</strong> — sát ngay bên Quận 1, nhưng yên tĩnh hơn và ít kẹt xe hơn. Lựa chọn tốt nếu vẫn muốn ở gần trung tâm nhưng tránh sự náo nhiệt của Quận 1.</li>" +
+          "<li><strong>Quận Bình Thạnh</strong> — một lựa chọn tuyệt vời khác. Mang chất địa phương hơn một chút, vẫn dễ dàng di chuyển từ đây.</li>" +
+          "</ul><p>Về gợi ý ăn uống gần nơi bạn ở, xem mục <a href=\"#what-to-eat\">Ăn gì</a> bên dưới.</p>",
+      },
+      "faq-what-to-eat": {
+        question: "Chúng tôi nên ăn gì trong thời gian ở đó?",
+        answer:
+          "<p>Trả lời ngắn gọn: hầu như món gì cũng nên thử. Ẩm thực Việt Nam là một trong những lý do tuyệt vời nhất để đến sớm dự đám cưới này.</p>" +
+          "<h4>Ở Sài Gòn</h4><p>Bắt đầu với những món cơ bản — <strong>bánh mì</strong>, <strong>phở</strong>, và <strong>bún thịt nướng</strong> — ăn ở quán vỉa hè, không chỉ ở nhà hàng ngồi. Một số bữa ăn ngon nhất thành phố có giá rẻ hơn một ly cà phê ở quê nhà. Quán đông khách xếp hàng thường là dấu hiệu tốt, không phải điều đáng ngại.</p>" +
+          "<p>Muốn một lựa chọn chắc chắn hơn? <a href=\"https://guide.michelin.com/us/en/restaurants?q=Ho+Chi+Minh+City+vietnam&amp;seeAll=true\" target=\"_blank\" rel=\"noopener\">Danh sách Michelin Guide tại Thành phố Hồ Chí Minh</a> có cả những địa điểm được Michelin xếp hạng và đề xuất, phù hợp với mọi mức ngân sách — không chỉ có thực đơn thưởng thức cao cấp mà cả món ăn bình dân.</p>" +
+          "<h4 style=\"margin-top: 1.5rem;\">Ở Hồ Tràm</h4><p>Nằm ngay ven biển nên hải sản tươi rất dễ tìm gần khu nghỉ dưỡng. TODO: sẽ bổ sung vài gợi ý nhà hàng cụ thể sau khi chúng tôi khảo sát được vài chỗ ưng ý.</p>",
+      },
+    },
+    itinerary: {
+      1: {
+        label: "Ngày 1", vibe: "Đến nơi, thở phào, ăn uống.",
+        events: {
+          arrivals: { title: "Đến sân bay Sài Gòn (SGN)", description: "Hạ cánh bất cứ lúc nào chuyến bay của bạn đến — không có giờ tập trung chung. Grab là cách dễ nhất để về khách sạn hoặc thẳng đến Hồ Tràm.", time: "Cả ngày" },
+          "shuttle-arrival": { title: "Khung giờ xe đưa đón đến Hồ Tràm", description: "TODO: xác nhận thời gian. Chúng tôi sẽ sắp xếp vài khung giờ xe đưa đón từ TP.HCM cho những ai muốn đi cùng nhau thay vì tự đi Grab.", timeTemplate: "Xe đưa đón của khu nghỉ dưỡng từ TP.HCM chạy vào {times} trong ngày bạn đến. Cần đặt chỗ trước với bộ phận Đặt phòng/Lễ tân của khu nghỉ dưỡng — xem lịch chạy đầy đủ trong tuần tại trang Du lịch. Nếu không thì Grab cũng rất tiện." },
+          dinner: { title: "Tiệc chào mừng", description: "Không gian thoải mái, ngay tại khu nghỉ dưỡng, cứ đến với trang phục thoải mái sau chuyến bay dài. Chi tiết sẽ được cập nhật sau — giờ giấc hiện tại chỉ là tạm thời.", time: "TODO: 7:00 PM (tạm thời)" },
+        },
+      },
+      2: {
+        label: "Ngày 2", vibe: "Ngày cưới.",
+        events: {
+          ceremony: { title: "Lễ cưới", description: "Chương trình chi tiết vẫn đang được hoàn thiện. TODO: xác nhận giờ bắt đầu lễ cưới và vị trí cụ thể trong khuôn viên.", time: "TODO: giờ làm lễ" },
+          cocktail: { title: "Tiệc cocktail", description: "TODO: xác nhận thời gian. Đồ uống, món nhẹ, và chút thời gian thư giãn.", time: "TODO: giờ tiệc cocktail" },
+          reception: { title: "Tiệc chiêu đãi", description: "Ăn tối, phát biểu chúc mừng, khiêu vũ. TODO: xác nhận giờ bắt đầu và kết thúc tiệc.", time: "TODO: giờ tiệc chiêu đãi" },
+        },
+      },
+      3: {
+        label: "Ngày 3", vibe: "Ngày tự do — đi Vũng Tàu, hoặc không.",
+        events: {
+          "shuttle-vungtau": { title: "Xe đưa đón đến Vũng Tàu (tùy chọn)", description: "Chuyến đi trong ngày cho ai muốn trải nghiệm — bờ biển, hải sản, đổi gió một chút. Giờ khởi hành và quay về: TODO xác nhận.", time: "TODO: xác nhận giờ giấc" },
+          relax: { title: "Hoặc: nghỉ ngơi tại khu nghỉ dưỡng", description: "Lựa chọn cũng tuyệt không kém. Hồ bơi, bãi biển, spa, hoặc một giấc ngủ giúp bạn hết lệch múi giờ. Hãy cho chúng tôi biết lựa chọn của bạn trong biểu mẫu RSVP.", time: "Cả ngày" },
+        },
+      },
+      4: {
+        label: "Ngày 4", vibe: "Trả phòng, ôm tạm biệt, lên đường.",
+        events: {
+          checkout: { title: "Trả phòng", description: "TODO: xác nhận giờ trả phòng tiêu chuẩn và liệu khối phòng này có được trả phòng muộn hay không.", time: "TODO: giờ trả phòng" },
+          departures: { title: "Khởi hành về nước", description: "TODO: xác nhận dịch vụ giữ hành lý cho ai có chuyến bay muộn từ SGN. Hầu hết khách sẽ bay về vào dịp nghỉ lễ 4/7.", timeTemplate: "Xe đưa đón của khu nghỉ dưỡng về TP.HCM chạy vào {times}. TODO: xác nhận dịch vụ giữ hành lý cho ai có chuyến bay muộn từ SGN. Hầu hết khách sẽ bay về vào dịp nghỉ lễ 4/7." },
+        },
+      },
+    },
+    packingList: {
+      mosquito: { label: "Thuốc chống muỗi", note: "Mang theo loại bạn thích nếu có — chúng tôi cũng sẽ chuẩn bị sẵn thêm." },
+      swimwear: { label: "Quần short & đồ bơi", note: "Trời sẽ nóng. Bạn sẽ cần dùng mỗi ngày." },
+      umbrella: { label: "Ô/dù", note: "Có thể sẽ có mưa. Khu nghỉ dưỡng cũng có sẵn để dùng thêm." },
+      sandals: { label: "Dép", note: "Nhẹ nhàng, thoáng khí, hợp với cát. Có sẵn để dùng thêm." },
+      hat: { label: "Mũ", note: "Loại mũ chống nắng bạn thực sự sẽ đội." },
+      attire: { label: "Trang phục dự tiệc cưới bãi biển", note: "Vải mỏng nhẹ, tránh đồ dày. Nóng và ẩm là điều chắc chắn." },
+      sunscreen: { label: "Kem chống nắng", note: "Loại an toàn cho rạn san hô nếu bạn có. Nắng ở đây không nương tay đâu." },
+      golf: { label: "Đồ chơi golf (tùy chọn)", note: "Có sân golf gần đó. Có thể thuê gậy; lưu ý có quy định trang phục.", linkLabel: "The Bluffs Ho Tram Strip" },
+    },
+  },
+
+  id: {
+    faqCategories: {
+      flights: "Penerbangan", visas: "Visa", arriving: "Tiba di SGN", phones: "Telepon & Data",
+      "getting-around": "Transportasi", "where-to-stay": "Tempat Menginap", "what-to-eat": "Apa yang Dimakan",
+    },
+    faqs: {
+      "faq-direct-flights": {
+        question: "Bagaimana cara kami ke Saigon?",
+        answer: "<p>Vietnam Airlines memiliki penerbangan langsung ke Saigon (SGN) dari beberapa kota gerbang di AS. Jika penerbangan langsung tidak sesuai jadwal atau anggaran Anda, tersedia banyak opsi transit lewat Tokyo, Seoul, atau Taipei — alasan bagus untuk memecah perjalanan panjang.</p>",
+      },
+      "faq-when-to-book": {
+        question: "Kapan sebaiknya kami memesan tiket pesawat?",
+        answer: "<p>Akhir Juni/awal Juli adalah musim ramai, jadi jangan menunda. <strong>3–6 bulan sebelumnya</strong> adalah waktu terbaik untuk harga tiket — pasang pengingat harga lebih awal lagi supaya Anda tahu harga \"normal\" sebelum melonjak.</p><p>Penerbangannya panjang dan jet lag itu nyata. Ini alasan lain untuk datang beberapa hari lebih awal (lihat <a href=\"schedule.html#arrival-plan\">saran rencana kedatangan</a>).</p>",
+      },
+      "faq-do-i-need-a-visa": {
+        question: "Apakah saya perlu visa?",
+        answer: "<p>Tergantung paspor Anda — periksa dulu, jangan berasumsi. Banyak wisatawan bisa mengajukan e-visa secara online.</p><p>Pengajuan e-visa dilakukan lewat portal resmi pemerintah: <a href=\"https://evisa.gov.vn/\" target=\"_blank\" rel=\"noopener\">evisa.gov.vn</a>. E-visa butuh <strong>minimal 2 minggu</strong> untuk diproses. Tapi Vietnam berjalan dengan waktunya sendiri, jadi jangan menunggu lebih dari <strong>satu bulan</strong> sebelum tanggal keberangkatan untuk mengajukan.</p><p><strong>Hati-hati:</strong> ada situs visa pihak ketiga tiruan yang mengenakan biaya tambahan untuk layanan yang sama. Jika ragu, gunakan tautan resmi evisa.gov.vn di atas.</p>",
+      },
+      "faq-customs": {
+        question: "Bagaimana proses bea cukai dan imigrasi di SGN?",
+        answer: "<p>Antrean imigrasi bisa panjang, terutama jika beberapa penerbangan internasional mendarat berdekatan. Bersabarlah, siapkan paspor dan (jika perlu) visa yang sudah disetujui dalam bentuk cetak atau tersimpan offline, dan luangkan waktu ekstra sebelum merencanakan perjalanan lanjutan.</p>",
+      },
+      "faq-phones-data": {
+        question: "Apakah ponsel saya bisa digunakan di Vietnam?",
+        answer: "<p>Beberapa operator AS — termasuk T-Mobile — menyertakan data dan SMS internasional gratis di paket tertentu. Periksa paket spesifik Anda sebelum berasumsi sudah termasuk; tidak semua paket T-Mobile mencakupnya.</p><p>Jika operator Anda tidak mendukung, eSIM lokal adalah alternatif mudah dan murah yang bisa disiapkan sebelum mendarat.</p>",
+      },
+      "faq-grab": {
+        question: "Bagaimana cara kami berkeliling setelah mendarat?",
+        answer: "<p>Unduh <strong>Grab</strong> (Uber-nya Vietnam) sebelum tiba. Anda akan memakainya di dalam kota dan untuk menuju lokasi acara.</p><p>Anda tidak perlu nomor telepon Vietnam untuk mendaftar atau menggunakannya — nomor biasa Anda sudah cukup. Tapi Anda perlu data, jadi pastikan paket ponsel atau eSIM Anda aktif sebelum mendarat (lihat bagian Telepon & Data di atas).</p><p>Bayar tunai dengan VND atau tautkan kartu kredit di aplikasi — keduanya bisa.</p><p><strong>Jangan menerima tawaran tumpangan dari orang yang mendekati Anda di area kedatangan bandara.</strong> Abaikan mereka dan pesan lewat aplikasi di titik jemput yang ditentukan.</p><p>Satu hal lagi: Vietnam tidak punya budaya tip. Tidak perlu memberi tip ke pengemudi Grab.</p>",
+      },
+      "faq-getting-to-ho-tram": {
+        question: "Bagaimana cara kami dari Saigon ke Ho Tram?",
+        answer:
+          "<p>Ho Tram berjarak sekitar <strong>2,5–3 jam</strong> dari pusat kota Saigon lewat darat.</p><p>Resor menyediakan shuttle reguler ke dan dari Ho Chi Minh City — jadwalnya tergantung hari:</p>" +
+          renderShuttleScheduleHtmlForLang("id") +
+          "<p style=\"margin-top: 1rem;\">Selain itu, Grab juga pilihan yang bisa diandalkan untuk perjalanan ini.</p>",
+      },
+      "faq-where-to-stay": {
+        question: "Sebaiknya kami menginap di mana?",
+        answer:
+          "<h4>Di Ho Tram</h4><p>Kami sudah menyiapkan blok kamar di <strong id=\"faq-hotel-name\">TODO: Resort Name</strong>. Kamar standar, suite, dan vila semuanya tersedia tergantung jumlah rombongan dan anggaran Anda.</p><ul><li><strong>Tautan pemesanan:</strong> <a id=\"faq-hotel-link\" href=\"https://example.com/TODO-booking-link\" target=\"_blank\" rel=\"noopener\">TODO: paste booking link</a></li><li><strong>Kode blok kamar:</strong> <span id=\"faq-hotel-code\">TODO-ROOM-BLOCK-CODE</span></li><li><strong>Pertanyaan:</strong> <span id=\"faq-hotel-contact\">TODO@example.com</span></li></ul>" +
+          "<h4 style=\"margin-top: 1.5rem;\">Pusat Kota Ho Chi Minh</h4><p>Datang lebih awal untuk menjelajahi Saigon dulu (lihat <a href=\"schedule.html#arrival-plan\">saran rencana kedatangan</a>)? Beberapa area yang layak dipertimbangkan untuk menginap:</p><ul>" +
+          "<li><strong>District 1</strong> — jantung kota yang ramai wisatawan. Mudah dijelajahi dengan berjalan kaki, penuh tempat wisata, restoran, dan kehidupan malam. Pilih di sini jika ingin berada di tengah semua keramaian.</li>" +
+          "<li><strong>District 4</strong> — tepat di sebelah District 1, tapi lebih tenang dan tidak seramai lalu lintasnya. Pilihan bagus jika masih ingin dekat tanpa keramaian District 1.</li>" +
+          "<li><strong>District Bình Thạnh</strong> — pilihan bagus lainnya. Sedikit lebih lokal, tetap mudah diakses dari sini.</li>" +
+          "</ul><p>Untuk rekomendasi makanan di sekitar tempat Anda menginap, lihat <a href=\"#what-to-eat\">Apa yang Dimakan</a> di bawah.</p>",
+      },
+      "faq-what-to-eat": {
+        question: "Apa yang sebaiknya kami makan selama di sana?",
+        answer:
+          "<p>Jawaban singkat: hampir semuanya. Makanan Vietnam adalah salah satu alasan terbaik untuk datang lebih awal ke pernikahan ini.</p>" +
+          "<h4>Di Saigon</h4><p>Mulai dari yang dasar — <strong>bánh mì</strong>, <strong>phở</strong>, dan <strong>bún thịt nướng</strong> — dari gerobak kaki lima, bukan cuma restoran duduk. Beberapa makanan terenak di kota ini harganya lebih murah dari secangkir kopi di negara asal Anda. Gerobak ramai dengan antrean adalah pertanda bagus, bukan tanda bahaya.</p>" +
+          "<p>Ingin pilihan yang lebih pasti? <a href=\"https://guide.michelin.com/us/en/restaurants?q=Ho+Chi+Minh+City+vietnam&amp;seeAll=true\" target=\"_blank\" rel=\"noopener\">Daftar Michelin Guide Kota Ho Chi Minh</a> punya tempat berperingkat Michelin maupun yang direkomendasikan Michelin untuk semua anggaran — termasuk makanan murah, bukan cuma set menu mewah.</p>" +
+          "<h4 style=\"margin-top: 1.5rem;\">Di Ho Tram</h4><p>Berada di pesisir membuat makanan laut segar mudah ditemukan dekat resor. TODO: akan tambahkan beberapa rekomendasi restoran spesifik setelah kami menemukan favorit.</p>",
+      },
+    },
+    itinerary: {
+      1: {
+        label: "Hari 1", vibe: "Tiba, bernapas lega, makan.",
+        events: {
+          arrivals: { title: "Tiba di Saigon (SGN)", description: "Mendarat kapan pun penerbangan Anda tiba — tidak ada waktu kedatangan bersama. Grab adalah cara termudah menuju hotel atau langsung ke Ho Tram.", time: "Sepanjang hari" },
+          "shuttle-arrival": { title: "Jadwal shuttle ke Ho Tram", description: "TODO: konfirmasi waktu. Kami akan menyediakan beberapa jadwal shuttle dari HCMC bagi yang ingin bepergian bersama daripada naik Grab sendiri.", timeTemplate: "Shuttle resor dari HCMC berjalan pada {times} di hari kedatangan Anda. Kursi perlu dipesan sebelumnya lewat tim Reservasi/Concierge resor — lihat jadwal mingguan lengkap di halaman Perjalanan. Kalau tidak, Grab juga oke." },
+          dinner: { title: "Makan malam penyambutan", description: "Santai, di area resor, datang apa adanya setelah penerbangan panjang. Detail menyusul — waktu ini masih sementara.", time: "TODO: 19:00 (sementara)" },
+        },
+      },
+      2: {
+        label: "Hari 2", vibe: "Hari pernikahan.",
+        events: {
+          ceremony: { title: "Upacara pernikahan", description: "Susunan acara masih difinalisasi. TODO: konfirmasi waktu mulai upacara dan lokasi tepatnya di area resor.", time: "TODO: waktu upacara" },
+          cocktail: { title: "Jam koktail", description: "TODO: konfirmasi waktu. Minuman, camilan, waktu untuk bernapas sejenak.", time: "TODO: jam koktail" },
+          reception: { title: "Resepsi", description: "Makan malam, ucapan selamat, dansa. TODO: konfirmasi waktu mulai dan selesai resepsi.", time: "TODO: waktu resepsi" },
+        },
+      },
+      3: {
+        label: "Hari 3", vibe: "Hari bebas — ke Vung Tau, atau tidak.",
+        events: {
+          "shuttle-vungtau": { title: "Shuttle ke Vung Tau (opsional)", description: "Wisata sehari bagi yang menginginkannya — garis pantai, makanan laut, suasana baru. Waktu keberangkatan dan kepulangan: TODO konfirmasi.", time: "TODO: konfirmasi waktu" },
+          relax: { title: "Atau: bersantai di resor", description: "Pilihan yang sama bagusnya. Kolam renang, pantai, spa, atau tidur siang untuk mengatasi jet lag. Beri tahu kami preferensi Anda di formulir konfirmasi.", time: "Sepanjang hari" },
+        },
+      },
+      4: {
+        label: "Hari 4", vibe: "Check-out, pelukan perpisahan, keberangkatan.",
+        events: {
+          checkout: { title: "Check-out", description: "TODO: konfirmasi waktu check-out standar dan apakah late check-out tersedia untuk blok kamar ini.", time: "TODO: waktu checkout" },
+          departures: { title: "Keberangkatan", description: "TODO: konfirmasi opsi penitipan bagasi bagi yang penerbangannya lebih siang dari SGN. Sebagian besar tamu terbang pulang selama akhir pekan libur 4 Juli.", timeTemplate: "Shuttle resor kembali ke HCMC berjalan pada {times}. TODO: konfirmasi opsi penitipan bagasi bagi yang penerbangannya lebih siang dari SGN. Sebagian besar tamu terbang pulang selama akhir pekan libur 4 Juli." },
+        },
+      },
+    },
+    packingList: {
+      mosquito: { label: "Losion anti nyamuk", note: "Bawa favorit Anda sendiri jika punya — kami juga akan menyediakan cadangan." },
+      swimwear: { label: "Celana pendek & baju renang", note: "Cuacanya akan panas. Anda akan memakainya setiap hari." },
+      umbrella: { label: "Payung", note: "Hujan mungkin turun. Kami juga punya cadangan di resor." },
+      sandals: { label: "Sandal", note: "Ringan, adem, cocok untuk pasir. Cadangan tersedia." },
+      hat: { label: "Topi", note: "Pelindung matahari yang benar-benar akan Anda pakai." },
+      attire: { label: "Busana pernikahan pantai", note: "Bahan ringan, hindari yang tebal. Panas dan lembap sudah pasti." },
+      sunscreen: { label: "Tabir surya", note: "Yang aman untuk terumbu karang jika Anda punya. Mataharinya tidak akan berkompromi." },
+      golf: { label: "Perlengkapan golf (opsional)", note: "Ada lapangan golf di dekatnya. Stik bisa disewa; ada aturan berpakaian.", linkLabel: "The Bluffs Ho Tram Strip" },
+    },
+  },
+};
+
+/* =============================================================================
+   Public API
+   ========================================================================== */
+var I18N = (function () {
+  var STORAGE_KEY = "wedding_lang";
+  var VISITED_KEY = "wedding_lang_modal_seen";
+
+  function getLang() {
+    try {
+      var stored = localStorage.getItem(STORAGE_KEY);
+      if (stored && SUPPORTED_LANGUAGES.some(function (l) { return l.code === stored; })) return stored;
+    } catch (e) { /* localStorage unavailable (private mode, etc.) */ }
+    return "en";
+  }
+
+  function setLang(code) {
+    try { localStorage.setItem(STORAGE_KEY, code); } catch (e) { /* ignore */ }
+  }
+
+  function hasSeenModal() {
+    try { return localStorage.getItem(VISITED_KEY) === "1"; } catch (e) { return true; }
+  }
+
+  function markModalSeen() {
+    try { localStorage.setItem(VISITED_KEY, "1"); } catch (e) { /* ignore */ }
+  }
+
+  function localeCode() {
+    return LOCALE_MAP[getLang()] || "en-US";
+  }
+
+  function interpolate(str, vars) {
+    if (!vars) return str;
+    return Object.keys(vars).reduce(function (acc, key) {
+      return acc.split("{" + key + "}").join(vars[key]);
+    }, str);
+  }
+
+  function t(key, vars) {
+    var lang = getLang();
+    var entry = UI_STRINGS[key];
+    if (!entry) return key;
+    var str = entry[lang] || entry.en || "";
+    return interpolate(str, vars);
+  }
+
+  function translateFaqCategory(cat) {
+    var lang = getLang();
+    var override = CONTENT_TRANSLATIONS[lang] && CONTENT_TRANSLATIONS[lang].faqCategories;
+    return (override && override[cat.id]) || cat.label;
+  }
+
+  function translateFaq(faq) {
+    var lang = getLang();
+    var override = CONTENT_TRANSLATIONS[lang] && CONTENT_TRANSLATIONS[lang].faqs && CONTENT_TRANSLATIONS[lang].faqs[faq.id];
+    if (!override) return { question: faq.question, answer: faq.answer };
+    return { question: override.question || faq.question, answer: override.answer || faq.answer };
+  }
+
+  function translateItineraryDay(day) {
+    var lang = getLang();
+    var override = CONTENT_TRANSLATIONS[lang] && CONTENT_TRANSLATIONS[lang].itinerary && CONTENT_TRANSLATIONS[lang].itinerary[day.day];
+    var label = (override && override.label) || day.label;
+    var vibe = (override && override.vibe) || day.vibe;
+    var events = day.events.map(function (ev) {
+      var evOverride = override && override.events && override.events[ev.id];
+      if (!evOverride) return ev;
+      var description = evOverride.description || ev.description;
+      var time = evOverride.time || ev.time;
+      // Dynamic shuttle events (Day 1 arrival shuttle, Day 4 departures) carry
+      // a {times}-templated description so the already-computed real times
+      // (from content.js) get substituted into the translated sentence too;
+      // the displayed time itself is rebuilt the same way, with a localized
+      // "or" connector between the possible shuttle windows.
+      if (evOverride.timeTemplate) {
+        var group = ev.id === "shuttle-arrival" ? SHUTTLE_SCHEDULE.arrivalGroup : SHUTTLE_SCHEDULE.departureGroup;
+        var timesSource = ev.id === "shuttle-arrival" ? SHUTTLE_SCHEDULE.toHoTram : SHUTTLE_SCHEDULE.toHCMC;
+        var timesList = timesSource[group] || [];
+        var times = timesList.join(" " + t("common.or") + " ");
+        description = evOverride.timeTemplate.split("{times}").join(times);
+        time = times;
+      }
+      return {
+        id: ev.id,
+        time: time,
+        icon: ev.icon,
+        title: evOverride.title || ev.title,
+        description: description,
+      };
+    });
+    var dateDisplay = new Date(day.dateISO + "T00:00:00").toLocaleDateString(LOCALE_MAP[lang] || "en-US", {
+      month: "long",
+      day: "numeric",
+    });
+    return { day: day.day, dateISO: day.dateISO, label: label, dateDisplay: dateDisplay, vibe: vibe, events: events };
+  }
+
+  function translatePackingItem(item) {
+    var lang = getLang();
+    var override = CONTENT_TRANSLATIONS[lang] && CONTENT_TRANSLATIONS[lang].packingList && CONTENT_TRANSLATIONS[lang].packingList[item.id];
+    if (!override) return item;
+    return Object.assign({}, item, {
+      label: override.label || item.label,
+      note: override.note || item.note,
+      linkLabel: override.linkLabel || item.linkLabel,
+    });
+  }
+
+  return {
+    languages: SUPPORTED_LANGUAGES,
+    getLang: getLang,
+    setLang: setLang,
+    hasSeenModal: hasSeenModal,
+    markModalSeen: markModalSeen,
+    localeCode: localeCode,
+    t: t,
+    translateFaqCategory: translateFaqCategory,
+    translateFaq: translateFaq,
+    translateItineraryDay: translateItineraryDay,
+    translatePackingItem: translatePackingItem,
+  };
+})();

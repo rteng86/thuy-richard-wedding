@@ -20,23 +20,26 @@
 <link rel="stylesheet" href="styles.css">
 </head>
 <body>
-<a class="skip-link" href="#main">Skip to content</a>
+<a class="skip-link" href="#main" data-i18n="skip-link">Skip to content</a>
 <span id="top"></span>
 
 <header class="site-header">
   <div class="container">
     <a href="index.html" class="site-logo" data-field="couple-names">Partner One &amp; Partner Two</a>
-    <button class="nav-toggle" type="button" aria-expanded="false" aria-controls="main-nav" aria-label="Toggle navigation menu">
-      <span></span>
-    </button>
-    <nav class="main-nav" id="main-nav" aria-label="Primary">
-      <ul>
-        <li><a href="index.html">Home</a></li>
-        <li><a href="travel.html">Travel</a></li>
-        <li><a href="schedule.html">Schedule</a></li>
-        <li><a href="guide.html">Guide</a></li>
-      </ul>
-    </nav>
+    <div class="header-actions">
+      <div class="lang-switcher" data-lang-switcher></div>
+      <button class="nav-toggle" type="button" aria-expanded="false" aria-controls="main-nav" data-i18n-aria="nav.toggleAria" aria-label="Toggle navigation menu">
+        <span></span>
+      </button>
+      <nav class="main-nav" id="main-nav" aria-label="Primary">
+        <ul>
+          <li><a href="index.html" data-i18n="nav.home">Home</a></li>
+          <li><a href="travel.html" data-i18n="nav.travel">Travel</a></li>
+          <li><a href="schedule.html" data-i18n="nav.schedule">Schedule</a></li>
+          <li><a href="guide.html" data-i18n="nav.guide">Guide</a></li>
+        </ul>
+      </nav>
+    </div>
   </div>
 </header>
 
@@ -45,12 +48,12 @@
   <section class="page-hero">
     <div class="container">
       <span class="eyebrow" data-field="date-range">June 30–July 3, 2027</span>
-      <h1>Four days, roughly in order</h1>
-      <p class="container-narrow">Arrive, get married (that's us), take a free day however you like, then head home. Times marked TODO are still being finalized.</p>
+      <h1 data-i18n="schedule.heading">Four days, roughly in order</h1>
+      <p class="container-narrow" data-i18n="schedule.sub">Arrive, get married (that's us), take a free day however you like, then head home. Times marked TODO are still being finalized.</p>
       <div class="hero-actions" style="margin-top: var(--space-5);">
         <button type="button" class="btn btn--secondary" data-ics-download>
           <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true" style="width:18px;height:18px;"><path d="M12 3v12m0 0 4-4m-4 4-4-4M4 17v3a1 1 0 0 0 1 1h14a1 1 0 0 0 1-1v-3"/></svg>
-          Add to calendar (.ics)
+          <span data-i18n="schedule.addToCalendar">Add to calendar (.ics)</span>
         </button>
       </div>
     </div>
@@ -60,19 +63,19 @@
     <div class="container">
       <div class="day-selector" role="tablist" aria-label="Select a day">
         <button type="button" data-day="1" role="tab" aria-selected="true" aria-controls="day-1">
-          <span class="ds-day">Day 1</span>
+          <span class="ds-day" data-i18n="schedule.day1">Day 1</span>
           <span class="ds-date" data-field="date-arrival">June 30</span>
         </button>
         <button type="button" data-day="2" role="tab" aria-selected="false" aria-controls="day-2">
-          <span class="ds-day">Day 2</span>
+          <span class="ds-day" data-i18n="schedule.day2">Day 2</span>
           <span class="ds-date" data-field="date-wedding">July 1</span>
         </button>
         <button type="button" data-day="3" role="tab" aria-selected="false" aria-controls="day-3">
-          <span class="ds-day">Day 3</span>
+          <span class="ds-day" data-i18n="schedule.day3">Day 3</span>
           <span class="ds-date" data-field="date-excursion">July 2</span>
         </button>
         <button type="button" data-day="4" role="tab" aria-selected="false" aria-controls="day-4">
-          <span class="ds-day">Day 4</span>
+          <span class="ds-day" data-i18n="schedule.day4">Day 4</span>
           <span class="ds-date" data-field="date-departure">July 3</span>
         </button>
       </div>
@@ -82,8 +85,9 @@
       </div>
 
       <p class="fade-in" style="margin-top: var(--space-6);">
-        Deciding between Vung Tau and the resort on Day 3? Tell us on the
-        <a href="index.html#rsvp">RSVP form</a> — no pressure either way.
+        <span data-i18n="schedule.decidingPrefix">Deciding between Vung Tau and the resort on Day 3? Tell us on the</span>
+        <a href="index.html#rsvp" data-i18n="schedule.rsvpFormLink">RSVP form</a>
+        <span data-i18n="schedule.decidingSuffix">— no pressure either way.</span>
       </p>
     </div>
   </section>
@@ -91,20 +95,20 @@
   <section class="section section--sand" id="arrival-plan">
     <div class="container">
       <div class="callout fade-in">
-        <span class="eyebrow">Suggested arrival plan</span>
-        <h3>Come early, decompress twice</h3>
-        <p>
+        <span class="eyebrow" data-i18n="schedule.arrivalPlanEyebrow">Suggested arrival plan</span>
+        <h3 data-i18n="schedule.arrivalPlanHeading">Come early, decompress twice</h3>
+        <p data-i18n-html="schedule.arrivalPlanP1">
           The flight is long, and jet lag doesn't care about your itinerary. We'd suggest flying into
           Ho Chi Minh City <strong>a few days to a week before June 30</strong> — explore the city while
           you're still running on adrenaline, then head to the resort already unwound.
         </p>
-        <p>In Saigon, a few easy ways to spend the time:</p>
+        <p data-i18n="schedule.arrivalPlanP2">In Saigon, a few easy ways to spend the time:</p>
         <ul>
-          <li>Coffee culture — egg coffee, weasel coffee, or just a plastic stool and a strong cà phê sữa đá.</li>
-          <li>Street food crawls — bánh mì, phở, and whatever smells the best on the block you're standing on.</li>
-          <li>Motorbike-dodging as a spectator sport — find a café balcony over a busy intersection and watch the choreography.</li>
+          <li data-i18n="schedule.arrivalPlanLi1">Coffee culture — egg coffee, weasel coffee, or just a plastic stool and a strong cà phê sữa đá.</li>
+          <li data-i18n="schedule.arrivalPlanLi2">Street food crawls — bánh mì, phở, and whatever smells the best on the block you're standing on.</li>
+          <li data-i18n="schedule.arrivalPlanLi3">Motorbike-dodging as a spectator sport — find a café balcony over a busy intersection and watch the choreography.</li>
         </ul>
-        <p>Then Ho Tram will feel like exactly the exhale it's supposed to be.</p>
+        <p data-i18n="schedule.arrivalPlanP3">Then Ho Tram will feel like exactly the exhale it's supposed to be.</p>
       </div>
     </div>
   </section>
@@ -112,19 +116,19 @@
   <div class="container section--tight fade-in">
     <div class="callout callout-qr-row">
       <div>
-        <h3>Still have a question?</h3>
-        <p>We're happy to help — <span data-field="contact-line-lowercase">text Richard at 626.319.1332 or join our WhatsApp group.</span></p>
+        <h3 data-i18n="common.stillHaveQuestion">Still have a question?</h3>
+        <p><span data-i18n="common.happyToHelp">We're happy to help —</span> <span data-field="contact-line-lowercase">text Richard at 626.319.1332 or join our WhatsApp group.</span></p>
       </div>
-      <a class="qr-link" data-field-href="whatsapp-link" href="#" target="_blank" rel="noopener" aria-label="Open the WhatsApp group invite">
+      <a class="qr-link" data-field-href="whatsapp-link" href="#" target="_blank" rel="noopener" data-i18n-aria="common.whatsappAria" aria-label="Open the WhatsApp group invite">
         <img data-field-src="whatsapp-qr" src="assets/whatsapp-qr.png" alt="QR code to join the Thuy &amp; Richard - Ho Tram Wedding WhatsApp group" width="140" height="140">
-        <span>Scan to join</span>
+        <span data-i18n="common.scanToJoin">Scan to join</span>
       </a>
     </div>
   </div>
 
 </main>
 
-<button type="button" class="back-to-top-fab" aria-label="Back to top">
+<button type="button" class="back-to-top-fab" data-i18n-aria="common.backToTopAria" aria-label="Back to top">
   <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true" style="width:22px;height:22px;"><path d="M12 19V5M5 12l7-7 7 7"/></svg>
 </button>
 
@@ -135,12 +139,13 @@
       <p class="footer-meta"><span data-field="location">Ho Tram, Vietnam</span> &middot; <span data-field="date-range">June 30–July 3, 2027</span></p>
     </div>
     <div>
-      <p>Questions? <span data-field="contact-line">Text Richard at 626.319.1332 or join our WhatsApp group (TBD).</span></p>
+      <p><span data-i18n="footer.questions">Questions?</span> <span data-field="contact-line">Text Richard at 626.319.1332 or join our WhatsApp group (TBD).</span></p>
     </div>
   </div>
 </footer>
 
 <script src="content.js"></script>
+<script src="i18n.js"></script>
 <script src="main.js"></script>
 </body>
 </html>

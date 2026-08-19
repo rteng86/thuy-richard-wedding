@@ -267,6 +267,60 @@ summary:focus-visible,
   white-space: nowrap;
 }
 
+.header-actions {
+  display: flex;
+  align-items: center;
+  gap: var(--space-3);
+}
+
+.lang-switcher { position: relative; }
+.lang-switcher-btn {
+  display: flex;
+  align-items: center;
+  gap: 5px;
+  min-height: 44px;
+  padding: 0 var(--space-3);
+  border: 1px solid var(--color-border);
+  border-radius: var(--radius-sm);
+  background: transparent;
+  font-weight: 600;
+  font-size: var(--fs-small);
+  cursor: pointer;
+}
+.lang-switcher-btn:hover { background: var(--color-sand); }
+.lang-switcher-code { text-transform: uppercase; letter-spacing: 0.02em; }
+.lang-switcher-menu {
+  position: absolute;
+  top: calc(100% + 8px);
+  right: 0;
+  min-width: 200px;
+  margin: 0;
+  padding: var(--space-2);
+  list-style: none;
+  background: var(--color-white);
+  border: 1px solid var(--color-border-soft);
+  border-radius: var(--radius-md);
+  box-shadow: var(--shadow-md);
+  z-index: 600;
+}
+.lang-switcher-option {
+  display: flex;
+  align-items: center;
+  gap: var(--space-2);
+  width: 100%;
+  min-height: 44px;
+  padding: var(--space-2) var(--space-3);
+  border: none;
+  border-radius: var(--radius-sm);
+  background: transparent;
+  font-weight: 500;
+  font-size: var(--fs-body);
+  text-align: left;
+  cursor: pointer;
+}
+.lang-switcher-option:hover { background: var(--color-accent-soft-2); }
+.lang-switcher-option.is-active { background: var(--color-accent-soft-2); color: var(--color-accent-deep); font-weight: 700; }
+
 .nav-toggle {
   display: none;
   width: 44px;
@@ -1062,6 +1116,68 @@ fieldset.fieldset {
 }
 .page-hero .eyebrow { display: block; margin-bottom: var(--space-3); }
 .page-hero p { margin-inline: auto; color: var(--color-ink-soft); }
+
+/* -----------------------------------------------------------------------
+   14. Language modal (index.html only, shown on first visit)
+   -------------------------------------------------------------------- */
+.lang-modal-overlay {
+  position: fixed;
+  inset: 0;
+  z-index: 1000;
+  background: rgba(36, 36, 31, 0.55);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  padding: var(--space-5);
+}
+.lang-modal-overlay[hidden] {
+  display: none;
+}
+.lang-modal {
+  width: 100%;
+  max-width: 420px;
+  background: var(--color-white);
+  border-radius: var(--radius-lg);
+  box-shadow: var(--shadow-lg);
+  padding: var(--space-6);
+  text-align: center;
+}
+.lang-modal h2 { margin-bottom: var(--space-2); }
+.lang-modal p { color: var(--color-ink-soft); margin: 0 auto var(--space-5); }
+.lang-modal-options {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: var(--space-3);
+}
+.lang-modal-option {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: var(--space-2);
+  min-height: 44px;
+  padding: var(--space-4) var(--space-3);
+  border: 1.5px solid var(--color-border);
+  border-radius: var(--radius-md);
+  background: var(--color-bone);
+  font-weight: 600;
+  font-size: var(--fs-small);
+  cursor: pointer;
+}
+.lang-modal-option:hover { border-color: var(--color-accent); background: var(--color-accent-soft-2); }
+.lang-modal-option .lang-modal-flag { font-size: 2rem; line-height: 1; }
+.lang-modal-dismiss {
+  display: inline-block;
+  margin-top: var(--space-5);
+  min-height: 44px;
+  padding: 0 var(--space-2);
+  background: none;
+  border: none;
+  color: var(--color-ink-faint);
+  text-decoration: underline;
+  text-underline-offset: 3px;
+  font-size: var(--fs-small);
+  cursor: pointer;
+}
 
 /* Utility */
 .text-center { text-align: center; }
