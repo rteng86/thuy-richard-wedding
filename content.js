@@ -277,14 +277,14 @@ var WEDDING_CONTENT = {
       category: "flights",
       question: "How do we get to Saigon?",
       answer:
-        "<p>Vietnam Airlines flies direct to Saigon (SGN) from several US gateway cities. If a direct flight doesn't work with your schedule or budget, plenty of one-stop options exist through hubs like Tokyo, Seoul, or Taipei — a good excuse to break up a long trip.</p>",
+        "<p>Vietnam Airlines flies direct to Saigon (SGN) from several US gateway cities. If a direct flight doesn't work with your schedule or budget, plenty of one-stop options exist through hubs like Tokyo, Seoul, or Taipei — a good excuse to break up a long trip.</p><p>Whichever route you take, make sure your final destination is <strong>Tan Son Nhat International Airport (SGN)</strong> in Ho Chi Minh City — not Hanoi (HAN) or another Vietnamese city, which would mean an extra domestic flight to get down to Saigon.</p>",
     },
     {
       id: "faq-when-to-book",
       category: "flights",
       question: "When should we book flights?",
       answer:
-        "<p>Late June/early July is peak season, so don't wait. <strong>3–6 months out</strong> is the sweet spot for fares — set fare alerts earlier than that so you know what \"normal\" looks like before prices climb.</p><p>The flight is long and jet lag is real. That's one more argument for arriving a few days early (see the <a href=\"schedule.html#arrival-plan\">suggested arrival plan</a>).</p>",
+        "<p>Late June/early July is peak season, so don't wait. <strong>January or February 2027</strong> is the sweet spot for fares — set fare alerts earlier than that so you know what \"normal\" looks like before prices climb.</p><p>The flight is long and jet lag is real. That's one more argument for arriving a few days early (see the <a href=\"schedule.html#arrival-plan\">suggested arrival plan</a>).</p>",
     },
     {
       id: "faq-do-i-need-a-visa",

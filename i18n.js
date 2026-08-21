@@ -354,11 +354,11 @@ var CONTENT_TRANSLATIONS = {
     faqs: {
       "faq-direct-flights": {
         question: "如何前往西贡？",
-        answer: "<p>越南航空（Vietnam Airlines）从美国多个门户城市直飞西贡（SGN）。如果直飞班次不符合您的时间或预算，也可经由东京、首尔或台北等枢纽转机——正好可以借此机会分段旅行，缓解长途飞行的疲惫。</p>",
+        answer: "<p>越南航空（Vietnam Airlines）从美国多个门户城市直飞西贡（SGN）。如果直飞班次不符合您的时间或预算，也可经由东京、首尔或台北等枢纽转机——正好可以借此机会分段旅行，缓解长途飞行的疲惫。</p><p>无论选择哪条路线，请务必确认最终目的地是胡志明市的<strong>新山一国际机场（SGN）</strong>——而不是河内（HAN）或越南其他城市，否则还需再转一趟国内航班才能抵达西贡。</p>",
       },
       "faq-when-to-book": {
         question: "应该何时预订机票？",
-        answer: "<p>六月末至七月初正值旅游旺季，请勿拖延预订。<strong>提前3–6个月</strong>是预订机票的最佳时机——更早一些则可先设置票价提醒，了解“正常”价格区间，以免临近出发时价格上涨。</p><p>飞行时间较长，时差反应也不容小觑。这也是建议提前几天抵达的另一个理由（详见<a href=\"schedule.html#arrival-plan\">建议行程安排</a>）。</p>",
+        answer: "<p>六月末至七月初正值旅游旺季，请勿拖延预订。<strong>2027年1月或2月</strong>是预订机票的最佳时机——更早一些则可先设置票价提醒，了解“正常”价格区间，以免临近出发时价格上涨。</p><p>飞行时间较长，时差反应也不容小觑。这也是建议提前几天抵达的另一个理由（详见<a href=\"schedule.html#arrival-plan\">建议行程安排</a>）。</p>",
       },
       "faq-do-i-need-a-visa": {
         question: "我需要签证吗？",
@@ -454,11 +454,11 @@ var CONTENT_TRANSLATIONS = {
     faqs: {
       "faq-direct-flights": {
         question: "Chúng tôi đến Sài Gòn bằng cách nào?",
-        answer: "<p>Vietnam Airlines có chuyến bay thẳng đến Sài Gòn (SGN) từ nhiều thành phố cửa ngõ ở Mỹ. Nếu chuyến bay thẳng không phù hợp lịch trình hoặc ngân sách, vẫn có nhiều lựa chọn quá cảnh qua Tokyo, Seoul hoặc Đài Bắc — một cái cớ hay để chia nhỏ chặng bay dài.</p>",
+        answer: "<p>Vietnam Airlines có chuyến bay thẳng đến Sài Gòn (SGN) từ nhiều thành phố cửa ngõ ở Mỹ. Nếu chuyến bay thẳng không phù hợp lịch trình hoặc ngân sách, vẫn có nhiều lựa chọn quá cảnh qua Tokyo, Seoul hoặc Đài Bắc — một cái cớ hay để chia nhỏ chặng bay dài.</p><p>Dù chọn hành trình nào, hãy đảm bảo điểm đến cuối cùng là <strong>Sân bay Quốc tế Tân Sơn Nhất (SGN)</strong> tại Thành phố Hồ Chí Minh — không phải Hà Nội (HAN) hay thành phố khác của Việt Nam, vì như vậy bạn sẽ cần bay thêm một chặng nội địa nữa mới đến được Sài Gòn.</p>",
       },
       "faq-when-to-book": {
         question: "Khi nào nên đặt vé máy bay?",
-        answer: "<p>Cuối tháng 6/đầu tháng 7 là mùa cao điểm, đừng chần chừ. <strong>Trước 3–6 tháng</strong> là thời điểm lý tưởng để săn vé — hãy đặt cảnh báo giá sớm hơn để biết mức giá \"bình thường\" trước khi giá tăng.</p><p>Chuyến bay khá dài và tình trạng lệch múi giờ là có thật. Đó là một lý do nữa để đến sớm vài ngày (xem <a href=\"schedule.html#arrival-plan\">gợi ý kế hoạch đến sớm</a>).</p>",
+        answer: "<p>Cuối tháng 6/đầu tháng 7 là mùa cao điểm, đừng chần chừ. <strong>Tháng 1 hoặc tháng 2 năm 2027</strong> là thời điểm lý tưởng để săn vé — hãy đặt cảnh báo giá sớm hơn để biết mức giá \"bình thường\" trước khi giá tăng.</p><p>Chuyến bay khá dài và tình trạng lệch múi giờ là có thật. Đó là một lý do nữa để đến sớm vài ngày (xem <a href=\"schedule.html#arrival-plan\">gợi ý kế hoạch đến sớm</a>).</p>",
       },
       "faq-do-i-need-a-visa": {
         question: "Tôi có cần visa không?",
