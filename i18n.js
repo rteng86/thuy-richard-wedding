@@ -261,7 +261,7 @@ var UI_STRINGS = {
   "guide.eatCard3Desc": { en: "Want a sure thing? The {link} has both Michelin-rated and Michelin-recommended spots across every budget.", zh: "想要稳妥之选？{link}收录了各种预算的米其林评级及米其林推荐餐厅。", vi: "Muốn một lựa chọn chắc chắn? {link} có cả những địa điểm được Michelin xếp hạng và đề xuất, phù hợp với mọi ngân sách." },
   "guide.michelinLink": { en: "Michelin Guide's Ho Chi Minh City list", zh: "米其林指南胡志明市榜单", vi: "danh sách Michelin Guide tại Thành phố Hồ Chí Minh" },
   "guide.eatCard4Title": { en: "Seafood in Ho Tram", zh: "头顿海鲜", vi: "Hải sản ở Hồ Tràm" },
-  "guide.eatCard4Desc": { en: "Being on the coast means fresh seafood is easy to find near the resort. TODO: add a few specific restaurant picks once we've scoped out favorites.", zh: "身处海岸地区，度假村附近很容易找到新鲜海鲜。待补充：等我们确定几家心仪餐厅后再补充具体推荐。", vi: "Nằm ngay ven biển nên hải sản tươi rất dễ tìm gần khu nghỉ dưỡng. TODO: sẽ bổ sung vài gợi ý nhà hàng cụ thể sau khi chúng tôi khảo sát được vài chỗ ưng ý." },
+  "guide.eatCard4Desc": { en: "Being on the coast means fresh seafood is easy to find near the resort.", zh: "身处海岸地区，度假村附近很容易找到新鲜海鲜。", vi: "Nằm ngay ven biển nên hải sản tươi rất dễ tìm gần khu nghỉ dưỡng." },
 
   "guide.bringHeading": { en: "What to bring", zh: "行李清单", vi: "Mang gì theo" },
   "guide.bringSub": { en: "Items with a “We've got you covered” badge — we'll have spares. Forgetting one isn't a crisis.", zh: "带有“我们已为您备好”标签的物品——我们会准备备用品。忘带了也完全不必担心。", vi: "Các món có nhãn “Chúng tôi lo rồi” — chúng tôi sẽ chuẩn bị sẵn thêm. Quên mang theo cũng không sao cả." },
@@ -400,7 +400,7 @@ var CONTENT_TRANSLATIONS = {
           "<p>简单来说：几乎什么都值得一试。越南美食本身就是提前抵达这场婚礼的绝佳理由之一。</p>" +
           "<h4>在西贡</h4><p>不妨从基本款开始——<strong>法棍三明治（bánh mì）</strong>、<strong>越南河粉（phở）</strong>和<strong>烤肉米线（bún thịt nướng）</strong>——建议在路边摊尝试，而不仅限于正式餐厅。这座城市里最美味的一些餐点，价格甚至比家乡一杯咖啡还便宜。摊位前排长队通常是美味的信号，而非需要避开的警示。</p>" +
           "<p>想要更有把握的选择？<a href=\"https://guide.michelin.com/us/en/restaurants?q=Ho+Chi+Minh+City+vietnam&amp;seeAll=true\" target=\"_blank\" rel=\"noopener\">米其林指南胡志明市榜单</a>收录了各种预算的米其林评级及米其林推荐餐厅——既有平价美食，也不乏精致品鉴菜单。</p>" +
-          "<h4 style=\"margin-top: 1.5rem;\">在头顿</h4><p>身处海岸地区，度假村附近很容易找到新鲜海鲜。待补充：等我们确定几家心仪餐厅后再补充具体推荐。</p>",
+          "<h4 style=\"margin-top: 1.5rem;\">在头顿</h4><p>身处海岸地区，度假村附近很容易找到新鲜海鲜。</p>",
       },
     },
     itinerary: {
@@ -500,7 +500,7 @@ var CONTENT_TRANSLATIONS = {
           "<p>Trả lời ngắn gọn: hầu như món gì cũng nên thử. Ẩm thực Việt Nam là một trong những lý do tuyệt vời nhất để đến sớm dự đám cưới này.</p>" +
           "<h4>Ở Sài Gòn</h4><p>Bắt đầu với những món cơ bản — <strong>bánh mì</strong>, <strong>phở</strong>, và <strong>bún thịt nướng</strong> — ăn ở quán vỉa hè, không chỉ ở nhà hàng ngồi. Một số bữa ăn ngon nhất thành phố có giá rẻ hơn một ly cà phê ở quê nhà. Quán đông khách xếp hàng thường là dấu hiệu tốt, không phải điều đáng ngại.</p>" +
           "<p>Muốn một lựa chọn chắc chắn hơn? <a href=\"https://guide.michelin.com/us/en/restaurants?q=Ho+Chi+Minh+City+vietnam&amp;seeAll=true\" target=\"_blank\" rel=\"noopener\">Danh sách Michelin Guide tại Thành phố Hồ Chí Minh</a> có cả những địa điểm được Michelin xếp hạng và đề xuất, phù hợp với mọi mức ngân sách — không chỉ có thực đơn thưởng thức cao cấp mà cả món ăn bình dân.</p>" +
-          "<h4 style=\"margin-top: 1.5rem;\">Ở Hồ Tràm</h4><p>Nằm ngay ven biển nên hải sản tươi rất dễ tìm gần khu nghỉ dưỡng. TODO: sẽ bổ sung vài gợi ý nhà hàng cụ thể sau khi chúng tôi khảo sát được vài chỗ ưng ý.</p>",
+          "<h4 style=\"margin-top: 1.5rem;\">Ở Hồ Tràm</h4><p>Nằm ngay ven biển nên hải sản tươi rất dễ tìm gần khu nghỉ dưỡng.</p>",
       },
     },
     itinerary: {

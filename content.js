@@ -343,7 +343,7 @@ var WEDDING_CONTENT = {
         "<p>Short answer: almost anything. Vietnamese food is one of the best reasons to be early to this wedding.</p>" +
         "<h4>In Saigon</h4><p>Start with the basics — <strong>bánh mì</strong>, <strong>phở</strong>, and <strong>bún thịt nướng</strong> — from a stall, not just a sit-down restaurant. Some of the best meals in the city cost less than a coffee back home. A busy stall with a line is a good sign, not a red flag.</p>" +
         "<p>Want something closer to a sure thing? The <a href=\"https://guide.michelin.com/us/en/restaurants?q=Ho+Chi+Minh+City+vietnam&amp;seeAll=true\" target=\"_blank\" rel=\"noopener\">Michelin Guide's Ho Chi Minh City list</a> has both Michelin-rated and Michelin-recommended spots across every budget — cheap eats included, not just tasting menus.</p>" +
-        "<h4 style=\"margin-top: 1.5rem;\">In Ho Tram</h4><p>Being on the coast means fresh seafood is easy to find near the resort. TODO: add a few specific restaurant picks once we've scoped out favorites.</p>",
+        "<h4 style=\"margin-top: 1.5rem;\">In Ho Tram</h4><p>Being on the coast means fresh seafood is easy to find near the resort.</p>",
     },
   ],
 
