@@ -214,19 +214,18 @@ already have.
 
 ## Multi-language support
 
-The site supports **English, Mandarin (中文), Vietnamese (Tiếng Việt), and
-Indonesian (Bahasa Indonesia)**. First-time visitors to `index.html` see a
-modal letting them pick a language (or "Continue in English"); after that,
-a flag/code selector in the top-right of the nav lets anyone switch anytime,
-on any page. The choice is remembered (`localStorage`) and carries across
-page navigation.
+The site supports **English, Mandarin (中文), and Vietnamese (Tiếng Việt)**.
+First-time visitors to `index.html` see a modal letting them pick a language
+(or "Continue in English"); after that, a flag/code selector in the
+top-right of the nav lets anyone switch anytime, on any page. The choice is
+remembered (`localStorage`) and carries across page navigation.
 
-**⚠️ Translation quality:** the Mandarin, Vietnamese, and Indonesian text was
-AI-drafted, not written or reviewed by a native speaker. It should read fine,
-but before this goes out to guests, it's worth having a native speaker
-(especially one on Thuy's side for Vietnamese) skim the FAQ answers and RSVP
-form in particular — those have the most nuance and the highest cost if
-something reads oddly.
+**⚠️ Translation quality:** the Mandarin and Vietnamese text was AI-drafted,
+not written or reviewed by a native speaker. It should read fine, but before
+this goes out to guests, it's worth having a native speaker (especially one
+on Thuy's side for Vietnamese) skim the FAQ answers and RSVP form in
+particular — those have the most nuance and the highest cost if something
+reads oddly.
 
 ### How it works
 
@@ -248,8 +247,8 @@ something reads oddly.
 Open `i18n.js` and search for the string (English UI text is easiest to grep
 for). UI strings live in `UI_STRINGS` near the top; content translations
 (FAQs, itinerary, packing list) live in `CONTENT_TRANSLATIONS`, one block per
-language (`zh`, `vi`, `id`). Edit the value for the language you want to fix
-— no other file needs to change.
+language (`zh`, `vi`). Edit the value for the language you want to fix — no
+other file needs to change.
 
 ### Adding a new language
 
@@ -258,7 +257,7 @@ language (`zh`, `vi`, `id`). Edit the value for the language you want to fix
 2. Add the language's locale to `LOCALE_MAP` (used for date/time formatting
    — e.g. `"ja-JP"`).
 3. Add a translation for every key in `UI_STRINGS` (each entry is an object
-   keyed by language code — add yours alongside `en`/`zh`/`vi`/`id`).
+   keyed by language code — add yours alongside `en`/`zh`/`vi`).
 4. Add a new block to `CONTENT_TRANSLATIONS` for the language, following the
    shape of the existing `zh`/`vi`/`id` blocks (`faqCategories`, `faqs`,
    `itinerary`, `packingList`). Missing entries fall back to English, so this
