@@ -277,7 +277,7 @@ var WEDDING_CONTENT = {
       category: "flights",
       question: "How do we get to Saigon?",
       answer:
-        "<p>Vietnam Airlines flies direct to Saigon (SGN) from several US gateway cities. If a direct flight doesn't work with your schedule or budget, plenty of one-stop options exist through hubs like Tokyo, Seoul, or Taipei — a good excuse to break up a long trip.</p><p>Whichever route you take, make sure your final destination is <strong>Tan Son Nhat International Airport (SGN)</strong> in Ho Chi Minh City — not Hanoi (HAN) or another Vietnamese city, which would mean an extra domestic flight to get down to Saigon.</p>",
+        "<p><strong>Vietnam Airlines</strong> is the only airline flying direct to Saigon (SGN) from the US, out of several gateway cities. Every other airline requires at least one stop — plenty of one-stop options exist through hubs like Tokyo, Seoul, or Taipei, which is a good excuse to break up a long trip.</p><p>Whichever route you take, make sure your final destination is <strong>Tan Son Nhat International Airport (SGN)</strong> in Ho Chi Minh City — not Hanoi (HAN) or another Vietnamese city, which would mean an extra domestic flight to get down to Saigon.</p>",
     },
     {
       id: "faq-when-to-book",
@@ -291,7 +291,7 @@ var WEDDING_CONTENT = {
       category: "visas",
       question: "Do I need a visa?",
       answer:
-        "<p>Depends on your passport — check before you assume. Many travelers can apply for an e-visa online.</p><p>E-visa applications go through the official government portal: <a href=\"https://evisa.gov.vn/\" target=\"_blank\" rel=\"noopener\">evisa.gov.vn</a>. The e-visa takes <strong>at least 2 weeks</strong> to process. But Vietnam works on its own time, so don't wait longer than <strong>a month</strong> before your travel dates to apply.</p><p><strong>Watch out:</strong> there are lookalike third-party visa sites that charge extra fees for the same service. When in doubt, use the official evisa.gov.vn link above.</p>",
+        "<p>Depends on your passport — check before you assume. Many travelers can apply for an e-visa online.</p><p>E-visa applications go through the official government portal: <a href=\"https://evisa.gov.vn/\" target=\"_blank\" rel=\"noopener\">evisa.gov.vn</a>. The e-visa takes <strong>at least 2 weeks</strong> to process. But Vietnam works on its own time, so don't wait longer than <strong>a month</strong> before your travel dates to apply.</p><p><strong>Check your passport's expiration date too:</strong> Vietnam expects at least <strong>6 months of validity remaining</strong> beyond your travel dates. If yours is cutting it close, this is a good time to renew.</p><p><strong>Watch out:</strong> there are lookalike third-party visa sites that charge extra fees for the same service. When in doubt, use the official evisa.gov.vn link above.</p>",
     },
     {
       id: "faq-customs",
@@ -353,10 +353,10 @@ var WEDDING_CONTENT = {
   packingList: [
     { id: "mosquito", icon: "bug", label: "Mosquito repellent", spare: true, note: "Bring your own if you have a favorite — we'll have spares." },
     { id: "swimwear", icon: "swim", label: "Shorts & swimwear", spare: false, note: "It will be hot. You'll want these daily." },
-    { id: "umbrella", icon: "umbrella", label: "Umbrella", spare: true, note: "Rain is possible. We'll have spares at the resort." },
+    { id: "umbrella", icon: "umbrella", label: "Umbrella or light rain jacket", spare: true, note: "Rain is possible. We'll have umbrellas at the resort, but a packable rain jacket is nice to have on excursion days." },
     { id: "sandals", icon: "sandal", label: "Sandals", spare: true, note: "Easy, breathable, forgiving of sand. Spares available." },
     { id: "hat", icon: "hat", label: "A hat", spare: false, note: "Sun protection you'll actually wear." },
-    { id: "attire", icon: "attire", label: "Beach-wedding attire", spare: false, note: "Light fabrics, nothing heavy. Heat and humidity are guaranteed." },
+    { id: "attire", icon: "attire", label: "Beach-wedding attire", spare: false, note: "Dress for the heat, not for the office — light fabrics, nothing heavy. No blazer or suit required; business casual is completely fine." },
     { id: "sunscreen", icon: "sun", label: "Sunscreen", spare: true, note: "Reef-safe if you have it. The sun does not negotiate." },
     { id: "golf", icon: "golf", label: "Golf gear (optional)", spare: false, note: "There's a course nearby. Clubs are rentable; there's a dress code.", link: "https://thebluffshotram.com/", linkLabel: "The Bluffs Ho Tram Strip" },
   ],

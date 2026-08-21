@@ -105,7 +105,7 @@ var UI_STRINGS = {
   "index.cardHowLongDesc": { en: "The core weekend is four days. We'd love it if you came a few days early to see Saigon first.", zh: "核心活动为期四天。欢迎您提前几天抵达，先逛逛西贡。", vi: "Sự kiện chính kéo dài bốn ngày. Chúng tôi rất mong bạn đến sớm vài ngày để khám phá Sài Gòn trước." },
   "index.cardHowLongLink": { en: "Suggested arrival plan →", zh: "建议行程安排 →", vi: "Gợi ý kế hoạch đến sớm →" },
   "index.cardWearTitle": { en: "What to wear", zh: "穿着建议", vi: "Nên mặc gì" },
-  "index.cardWearDesc": { en: "Beach-wedding attire: light fabrics, nothing heavy. It will be hot, and rain is possible.", zh: "海滩婚礼着装：轻薄面料为宜，避免厚重衣物。天气炎热，也可能下雨。", vi: "Trang phục dự tiệc cưới bãi biển: vải mỏng nhẹ, tránh đồ dày. Trời sẽ nóng và có thể có mưa." },
+  "index.cardWearDesc": { en: "Beach-wedding attire: light fabrics, nothing heavy. No blazer or suit required — business casual is fine.", zh: "海滩婚礼着装：轻薄面料为宜，避免厚重衣物。无需西装外套或正装，商务休闲装即可。", vi: "Trang phục dự tiệc cưới bãi biển: vải mỏng nhẹ, tránh đồ dày. Không cần vest hay áo blazer; trang phục công sở thoải mái (business casual) là được." },
   "index.cardWearLink": { en: "Full packing list →", zh: "完整打包清单 →", vi: "Danh sách hành lý đầy đủ →" },
 
   "rsvp.eyebrow": { en: "The main event", zh: "重头戏", vi: "Sự kiện chính" },
@@ -238,7 +238,8 @@ var UI_STRINGS = {
   "guide.safetyP2": { en: "See the {link} for the full rundown on getting around.", zh: "完整的市内交通攻略请见{link}。", vi: "Xem {link} để biết đầy đủ thông tin về cách di chuyển." },
   "guide.travelPageLink": { en: "Travel page", zh: "旅行页面", vi: "trang Du lịch" },
   "guide.weatherTitle": { en: "Weather", zh: "天气", vi: "Thời tiết" },
-  "guide.weatherP1": { en: "Late June/early July is hot, humid, and can rain without much warning. Expect it, don't fight it.", zh: "六月末至七月初气候炎热潮湿，且可能毫无预兆地突然下雨。请做好心理准备，坦然接受。", vi: "Cuối tháng 6/đầu tháng 7 trời nóng, ẩm, và có thể mưa bất chợt. Hãy chuẩn bị tinh thần, đừng cố chống lại." },
+  "guide.weatherP1": { en: "Late June/early July sits at the start of Ho Tram's wet season. Expect daytime highs around 88–92°F (31–33°C) with high humidity — it rarely feels comfortable to be outside for long without shade.", zh: "六月末至七月初正值头顿雨季伊始。白天气温通常在31–33°C（88–92°F）之间，湿度较高——在户外长时间待着若没有遮荫会相当难受。", vi: "Cuối tháng 6/đầu tháng 7 là thời điểm bắt đầu mùa mưa ở Hồ Tràm. Nhiệt độ ban ngày thường dao động khoảng 31–33°C (88–92°F) với độ ẩm cao — ở ngoài trời lâu mà không có bóng râm sẽ khá khó chịu." },
+  "guide.weatherP2": { en: "Rain usually shows up as a short, heavy downpour in the afternoon or evening rather than an all-day soak — mornings are typically clear. Either way, the sun is intense even under clouds, so sunscreen matters daily, not just when it's sunny.", zh: "降雨通常以午后或傍晚短时强降雨的形式出现，而非整日阴雨——早晨一般较为晴朗。不过即便多云，紫外线依然很强，所以每天都需要涂防晒霜，不只是晴天才需要。", vi: "Mưa thường đến bất chợt và khá lớn vào buổi chiều hoặc tối, chứ không mưa dầm cả ngày — buổi sáng thường quang đãng. Dù vậy, ánh nắng vẫn rất gắt kể cả khi trời nhiều mây, nên hãy thoa kem chống nắng mỗi ngày, không chỉ khi trời nắng." },
 
   "guide.timezoneEyebrow": { en: "Time zone", zh: "时区", vi: "Múi giờ" },
   "guide.timezoneHeading": { en: "Saigon vs. your local time", zh: "西贡时间对比您的当地时间", vi: "Sài Gòn so với giờ địa phương của bạn" },
@@ -354,7 +355,7 @@ var CONTENT_TRANSLATIONS = {
     faqs: {
       "faq-direct-flights": {
         question: "如何前往西贡？",
-        answer: "<p>越南航空（Vietnam Airlines）从美国多个门户城市直飞西贡（SGN）。如果直飞班次不符合您的时间或预算，也可经由东京、首尔或台北等枢纽转机——正好可以借此机会分段旅行，缓解长途飞行的疲惫。</p><p>无论选择哪条路线，请务必确认最终目的地是胡志明市的<strong>新山一国际机场（SGN）</strong>——而不是河内（HAN）或越南其他城市，否则还需再转一趟国内航班才能抵达西贡。</p>",
+        answer: "<p><strong>越南航空（Vietnam Airlines）</strong>是唯一一家从美国直飞西贡（SGN）的航空公司，可从多个门户城市出发。其他航空公司都至少需要转机一次——可经由东京、首尔或台北等枢纽转机，正好可以借此机会分段旅行，缓解长途飞行的疲惫。</p><p>无论选择哪条路线，请务必确认最终目的地是胡志明市的<strong>新山一国际机场（SGN）</strong>——而不是河内（HAN）或越南其他城市，否则还需再转一趟国内航班才能抵达西贡。</p>",
       },
       "faq-when-to-book": {
         question: "应该何时预订机票？",
@@ -362,7 +363,7 @@ var CONTENT_TRANSLATIONS = {
       },
       "faq-do-i-need-a-visa": {
         question: "我需要签证吗？",
-        answer: "<p>这取决于您的护照——请务必提前确认，切勿想当然。多数旅客可在线申请电子签证。</p><p>电子签证申请请通过越南政府官方网站办理：<a href=\"https://evisa.gov.vn/\" target=\"_blank\" rel=\"noopener\">evisa.gov.vn</a>。电子签证处理时间<strong>至少需要2周</strong>。不过越南的办事节奏有其自身规律，建议不要在出发前不到<strong>一个月</strong>才申请。</p><p><strong>请注意：</strong>网络上存在一些山寨第三方签证网站，会为同样的服务额外收费。如有疑问，请务必使用上方官方链接evisa.gov.vn。</p>",
+        answer: "<p>这取决于您的护照——请务必提前确认，切勿想当然。多数旅客可在线申请电子签证。</p><p>电子签证申请请通过越南政府官方网站办理：<a href=\"https://evisa.gov.vn/\" target=\"_blank\" rel=\"noopener\">evisa.gov.vn</a>。电子签证处理时间<strong>至少需要2周</strong>。不过越南的办事节奏有其自身规律，建议不要在出发前不到<strong>一个月</strong>才申请。</p><p><strong>也请确认护照的有效期：</strong>越南要求护照在您行程结束后仍至少有<strong>6个月的有效期</strong>。如果您的护照有效期比较紧张，现在正是办理续签的好时机。</p><p><strong>请注意：</strong>网络上存在一些山寨第三方签证网站，会为同样的服务额外收费。如有疑问，请务必使用上方官方链接evisa.gov.vn。</p>",
       },
       "faq-customs": {
         question: "西贡机场的海关与入境流程是怎样的？",
@@ -437,10 +438,10 @@ var CONTENT_TRANSLATIONS = {
     packingList: {
       mosquito: { label: "驱蚊用品", note: "如有惯用品牌请自带——我们也会准备备用品。" },
       swimwear: { label: "短裤与泳衣", note: "天气炎热，您每天都会用得上。" },
-      umbrella: { label: "雨伞", note: "可能会下雨。度假村也备有雨伞可供借用。" },
+      umbrella: { label: "雨伞或轻便雨衣", note: "可能会下雨。度假村备有雨伞可供借用，但外出游玩当天带一件可折叠雨衣会更方便。" },
       sandals: { label: "凉鞋", note: "轻便透气，不惧沙滩。度假村也备有可借用的凉鞋。" },
       hat: { label: "帽子", note: "真正会戴得住的防晒帽。" },
-      attire: { label: "海滩婚礼着装", note: "轻薄面料，避免厚重衣物。炎热与潮湿在所难免。" },
+      attire: { label: "海滩婚礼着装", note: "为炎热天气着装，而非为办公室着装——轻薄面料，避免厚重衣物。无需西装外套或正装，商务休闲装完全没问题。" },
       sunscreen: { label: "防晒霜", note: "如有护礁型防晒霜更佳。阳光可不会通融。" },
       golf: { label: "高尔夫装备（可选）", note: "附近设有球场，可租用球杆；请留意着装要求。", linkLabel: "The Bluffs Ho Tram Strip" },
     },
@@ -454,7 +455,7 @@ var CONTENT_TRANSLATIONS = {
     faqs: {
       "faq-direct-flights": {
         question: "Chúng tôi đến Sài Gòn bằng cách nào?",
-        answer: "<p>Vietnam Airlines có chuyến bay thẳng đến Sài Gòn (SGN) từ nhiều thành phố cửa ngõ ở Mỹ. Nếu chuyến bay thẳng không phù hợp lịch trình hoặc ngân sách, vẫn có nhiều lựa chọn quá cảnh qua Tokyo, Seoul hoặc Đài Bắc — một cái cớ hay để chia nhỏ chặng bay dài.</p><p>Dù chọn hành trình nào, hãy đảm bảo điểm đến cuối cùng là <strong>Sân bay Quốc tế Tân Sơn Nhất (SGN)</strong> tại Thành phố Hồ Chí Minh — không phải Hà Nội (HAN) hay thành phố khác của Việt Nam, vì như vậy bạn sẽ cần bay thêm một chặng nội địa nữa mới đến được Sài Gòn.</p>",
+        answer: "<p><strong>Vietnam Airlines</strong> là hãng duy nhất có chuyến bay thẳng đến Sài Gòn (SGN) từ Mỹ, khởi hành từ nhiều thành phố cửa ngõ. Mọi hãng khác đều cần quá cảnh ít nhất một lần — có nhiều lựa chọn quá cảnh qua Tokyo, Seoul hoặc Đài Bắc, một cái cớ hay để chia nhỏ chặng bay dài.</p><p>Dù chọn hành trình nào, hãy đảm bảo điểm đến cuối cùng là <strong>Sân bay Quốc tế Tân Sơn Nhất (SGN)</strong> tại Thành phố Hồ Chí Minh — không phải Hà Nội (HAN) hay thành phố khác của Việt Nam, vì như vậy bạn sẽ cần bay thêm một chặng nội địa nữa mới đến được Sài Gòn.</p>",
       },
       "faq-when-to-book": {
         question: "Khi nào nên đặt vé máy bay?",
@@ -462,7 +463,7 @@ var CONTENT_TRANSLATIONS = {
       },
       "faq-do-i-need-a-visa": {
         question: "Tôi có cần visa không?",
-        answer: "<p>Tùy vào hộ chiếu của bạn — hãy kiểm tra trước, đừng mặc định. Nhiều du khách có thể xin e-visa trực tuyến.</p><p>Đơn xin e-visa được nộp qua cổng thông tin chính thức của chính phủ: <a href=\"https://evisa.gov.vn/\" target=\"_blank\" rel=\"noopener\">evisa.gov.vn</a>. E-visa cần <strong>ít nhất 2 tuần</strong> để xử lý. Nhưng mọi thứ ở Việt Nam vận hành theo nhịp riêng, nên đừng đợi đến sát ngày đi mới nộp — hãy nộp trước chuyến đi <strong>ít nhất một tháng</strong>.</p><p><strong>Lưu ý:</strong> có những trang web visa bên thứ ba giả mạo, tính thêm phí cho cùng một dịch vụ. Nếu không chắc chắn, hãy dùng đúng liên kết chính thức evisa.gov.vn ở trên.</p>",
+        answer: "<p>Tùy vào hộ chiếu của bạn — hãy kiểm tra trước, đừng mặc định. Nhiều du khách có thể xin e-visa trực tuyến.</p><p>Đơn xin e-visa được nộp qua cổng thông tin chính thức của chính phủ: <a href=\"https://evisa.gov.vn/\" target=\"_blank\" rel=\"noopener\">evisa.gov.vn</a>. E-visa cần <strong>ít nhất 2 tuần</strong> để xử lý. Nhưng mọi thứ ở Việt Nam vận hành theo nhịp riêng, nên đừng đợi đến sát ngày đi mới nộp — hãy nộp trước chuyến đi <strong>ít nhất một tháng</strong>.</p><p><strong>Cũng nên kiểm tra ngày hết hạn hộ chiếu:</strong> Việt Nam yêu cầu hộ chiếu còn hiệu lực <strong>ít nhất 6 tháng</strong> tính từ sau ngày kết thúc chuyến đi. Nếu hộ chiếu của bạn sắp hết hạn, đây là lúc tốt để gia hạn.</p><p><strong>Lưu ý:</strong> có những trang web visa bên thứ ba giả mạo, tính thêm phí cho cùng một dịch vụ. Nếu không chắc chắn, hãy dùng đúng liên kết chính thức evisa.gov.vn ở trên.</p>",
       },
       "faq-customs": {
         question: "Thủ tục hải quan và nhập cảnh ở SGN như thế nào?",
@@ -537,10 +538,10 @@ var CONTENT_TRANSLATIONS = {
     packingList: {
       mosquito: { label: "Thuốc chống muỗi", note: "Mang theo loại bạn thích nếu có — chúng tôi cũng sẽ chuẩn bị sẵn thêm." },
       swimwear: { label: "Quần short & đồ bơi", note: "Trời sẽ nóng. Bạn sẽ cần dùng mỗi ngày." },
-      umbrella: { label: "Ô/dù", note: "Có thể sẽ có mưa. Khu nghỉ dưỡng cũng có sẵn để dùng thêm." },
+      umbrella: { label: "Ô/dù hoặc áo mưa nhẹ", note: "Có thể sẽ có mưa. Khu nghỉ dưỡng có sẵn ô để dùng thêm, nhưng một chiếc áo mưa gọn nhẹ sẽ tiện hơn vào những ngày đi chơi xa." },
       sandals: { label: "Dép", note: "Nhẹ nhàng, thoáng khí, hợp với cát. Có sẵn để dùng thêm." },
       hat: { label: "Mũ", note: "Loại mũ chống nắng bạn thực sự sẽ đội." },
-      attire: { label: "Trang phục dự tiệc cưới bãi biển", note: "Vải mỏng nhẹ, tránh đồ dày. Nóng và ẩm là điều chắc chắn." },
+      attire: { label: "Trang phục dự tiệc cưới bãi biển", note: "Mặc thoải mái cho thời tiết nóng, không cần trang trọng như ở văn phòng — vải mỏng nhẹ, tránh đồ dày. Không cần vest hay áo blazer; trang phục công sở thoải mái (business casual) là hoàn toàn ổn." },
       sunscreen: { label: "Kem chống nắng", note: "Loại an toàn cho rạn san hô nếu bạn có. Nắng ở đây không nương tay đâu." },
       golf: { label: "Đồ chơi golf (tùy chọn)", note: "Có sân golf gần đó. Có thể thuê gậy; lưu ý có quy định trang phục.", linkLabel: "The Bluffs Ho Tram Strip" },
     },
